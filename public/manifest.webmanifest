@@ -1,0 +1,48 @@
+{
+  "name": "Clubemp",
+  "short_name": "Clubemp",
+  "description": "Ecossistema Clubemp com acesso a login, vantagens, empresas e clientes em experiência de aplicativo.",
+  "lang": "pt-BR",
+  "id": "/login",
+  "start_url": "/login?source=pwa",
+  "scope": "/",
+  "display": "fullscreen",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
+  "background_color": "#0f0b05",
+  "theme_color": "#c49739",
+  "orientation": "portrait-primary",
+  "categories": [
+    "business",
+    "productivity",
+    "shopping"
+  ],
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Entrar",
+      "short_name": "Login",
+      "description": "Abrir a tela de login do Clubemp",
+      "url": "/login?source=pwa-shortcut"
+    }
+  ]
+}

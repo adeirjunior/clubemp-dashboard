@@ -1,15 +1,21 @@
-import Image from "next/image";
+import { redirect } from "next/navigation";
+import { readBackendSession } from "@/lib/backend";
+import { frontendPathFromBackendPath } from "@/lib/route-map";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Clubemp Dashboard
-          </h1>
-        </div>
-      </main>
-    </div>
+export const dynamic = "force-dynamic";
+
+export default async function Page() {
+  const session = await readBackendSession();
+  const activeContext = session.dashboard_contexts?.find(
+    (context) => context.key === session.active_dashboard_context,
   );
+  const fallbackContext = session.dashboard_contexts?.[0];
+  const targetPath =
+    typeof activeContext?.path === "string"
+      ? activeContext.path
+      : typeof fallbackContext?.path === "string"
+        ? fallbackContext.path
+        : "/login";
+
+  redirect(frontendPathFromBackendPath(targetPath));
 }

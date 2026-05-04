@@ -1,26 +1,73 @@
-@import "tailwindcss";
+@import "./legacy-app.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --clubemp-shell-bg:
+    radial-gradient(circle at 5% -8%, rgb(230 191 99 / 0.34), transparent 34%),
+    radial-gradient(circle at 92% 4%, rgb(196 151 57 / 0.28), transparent 30%),
+    linear-gradient(165deg, #1e180e, #2e2516);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html,
+body {
+  min-height: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: #0f0b05;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  color: var(--color-base-content);
+}
+
+.clubemp-auth-shell {
+  background:
+    radial-gradient(circle at 15% 15%, rgb(196 151 57 / 0.18), transparent 35%),
+    radial-gradient(circle at 85% 85%, rgb(196 151 57 / 0.12), transparent 38%),
+    linear-gradient(165deg, #0b0907, #141008);
+}
+
+.clubemp-dashboard-shell {
+  background: var(--clubemp-shell-bg);
+}
+
+.clubemp-rich-editor h2,
+.clubemp-rich-preview h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 0.75rem;
+}
+
+.clubemp-rich-editor h3,
+.clubemp-rich-preview h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.65rem;
+}
+
+.clubemp-rich-editor p,
+.clubemp-rich-preview p,
+.clubemp-rich-editor ul,
+.clubemp-rich-preview ul,
+.clubemp-rich-editor ol,
+.clubemp-rich-preview ol,
+.clubemp-rich-editor blockquote,
+.clubemp-rich-preview blockquote {
+  margin: 0 0 0.9rem;
+}
+
+.clubemp-rich-editor ul,
+.clubemp-rich-preview ul,
+.clubemp-rich-editor ol,
+.clubemp-rich-preview ol {
+  padding-left: 1.4rem;
+}
+
+.clubemp-rich-editor blockquote,
+.clubemp-rich-preview blockquote {
+  border-left: 4px solid
+    color-mix(in srgb, var(--color-primary) 55%, transparent);
+  padding-left: 1rem;
+  color: color-mix(in srgb, currentColor 72%, transparent);
 }
