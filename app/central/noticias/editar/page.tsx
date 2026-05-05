@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { NewsFormPage } from "@/components/dashboard/editorial-pages";
+import { asRecord, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,18 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/noticias/editar", await searchParams);
+  const data = await loadDashboardData(
+    "/dashboard/central/noticias/editar",
+    await searchParams,
+    "/central/noticias/editar",
+  );
+
+  return (
+    <NewsFormPage
+      formAction={String(data.formAction || "")}
+      formItem={asRecord(data.formItem || data.item || data.post)}
+      isEdit
+      title={String(data.formPageTitle || "Editar notícia")}
+    />
+  );
 }

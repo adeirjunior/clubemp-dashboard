@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { CompanyGenericList } from "@/components/dashboard/portal-pages";
+import { asRecordArray, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,20 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/meu-espaco/catalogo", await searchParams);
+  const data = await loadDashboardData(
+    "/portal/meu-espaco/catalogo",
+    await searchParams,
+    "/meu-espaco/catalogo",
+  );
+  return (
+    <CompanyGenericList
+      activeMenu="catalog"
+      columns={["#", "Nome", "Descrição", "Preço", "Status"]}
+      data={data}
+      description="Gerencie produtos, serviços e vantagens da empresa."
+      headerIcon="shopping-bag"
+      headerTitle="Catálogo"
+      rows={asRecordArray(data.products)}
+    />
+  );
 }

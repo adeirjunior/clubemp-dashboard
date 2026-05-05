@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { CourseFormPage } from "@/components/dashboard/editorial-pages";
+import { asRecord, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,18 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/cursos/editar", await searchParams);
+  const data = await loadDashboardData(
+    "/dashboard/central/cursos/editar",
+    await searchParams,
+    "/central/cursos/editar",
+  );
+
+  return (
+    <CourseFormPage
+      formAction={String(data.formAction || "")}
+      formItem={asRecord(data.formItem || data.item || data.course)}
+      isEdit
+      title={String(data.formPageTitle || "Editar curso")}
+    />
+  );
 }

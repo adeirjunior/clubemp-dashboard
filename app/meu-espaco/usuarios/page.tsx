@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { CompanyGenericList } from "@/components/dashboard/portal-pages";
+import { asRecordArray, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,20 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/meu-espaco/usuarios", await searchParams);
+  const data = await loadDashboardData(
+    "/portal/meu-espaco/usuarios",
+    await searchParams,
+    "/meu-espaco/usuarios",
+  );
+  return (
+    <CompanyGenericList
+      activeMenu="users"
+      columns={["Nome", "E-mail", "Perfil", "Permissões", "Status"]}
+      data={data}
+      description="Gerencie usuários e convites da equipe da empresa."
+      headerIcon="users"
+      headerTitle="Equipe da empresa"
+      rows={asRecordArray(data.teamUsers)}
+    />
+  );
 }

@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { EventFormPage } from "@/components/dashboard/editorial-pages";
+import { asRecord, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,18 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/eventos/editar", await searchParams);
+  const data = await loadDashboardData(
+    "/dashboard/central/eventos/editar",
+    await searchParams,
+    "/central/eventos/editar",
+  );
+
+  return (
+    <EventFormPage
+      formAction={String(data.formAction || "")}
+      formItem={asRecord(data.formItem || data.item || data.event)}
+      isEdit
+      title={String(data.formPageTitle || "Editar evento")}
+    />
+  );
 }

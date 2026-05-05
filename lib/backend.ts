@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { decodeBackendSessionState } from "./backend-session";
-import { frontendPathFromBackendPath } from "./route-map";
+import { frontendPathFromBackendPath } from "./frontend-routes";
 
 export const BACKEND_STATE_COOKIE = "clubemp_backend_state";
 
@@ -98,9 +98,7 @@ export async function fetchBackendDataPayload(
     return {
       data: {},
       redirectTo: sanitizeBackendLocation(
-        payload?.redirect_url ||
-          response.headers.get("location") ||
-          "/login",
+        payload?.redirect_url || response.headers.get("location") || "/login",
       ),
       status: response.status,
     };

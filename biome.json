@@ -13,7 +13,7 @@
       "!.next",
       "!dist",
       "!build",
-      "!app/legacy-app.css",
+      "!app/app.css",
       "!public/assets/css/app.css",
       "!public/manifest.webmanifest"
     ]

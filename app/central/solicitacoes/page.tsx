@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { SimpleCrudTable } from "@/components/dashboard/crud-pages";
+import { asRecordArray, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,31 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/solicitacoes", await searchParams);
+  const data = await loadDashboardData(
+    "/dashboard/central/solicitacoes",
+    await searchParams,
+    "/central/solicitacoes",
+  );
+  const requests = asRecordArray(data.items || data.requests);
+
+  return (
+    <SimpleCrudTable
+      activeMenu="requests"
+      columns={["Empresa", "Tipo", "Contato", "Status", "Criado em"]}
+      countLabel={`${data.requestsCount || requests.length} solicitações`}
+      description="Acompanhe solicitações comerciais e operacionais enviadas ao Clubemp."
+      emptyMessage="Nenhuma solicitação encontrada."
+      headerBadge="Administração"
+      headerIcon="building-2"
+      headerTitle="Solicitações"
+      rows={requests.map((request) => [
+        String(request.company_name || "-"),
+        String(request.request_type_label || "-"),
+        String(request.contact_name || request.entrepreneur_name || "-"),
+        String(request.status_label || "-"),
+        String(request.created_at || "-"),
+      ])}
+      title="Fila de solicitações"
+    />
+  );
 }

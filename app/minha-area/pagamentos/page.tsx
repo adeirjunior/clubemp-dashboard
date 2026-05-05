@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { CustomerPayments } from "@/components/dashboard/portal-pages";
+import { loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,11 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/minha-area/pagamentos", await searchParams);
+  const data = await loadDashboardData(
+    "/portal/minha-area/pagamentos",
+    await searchParams,
+    "/minha-area/pagamentos",
+  );
+
+  return <CustomerPayments data={data} />;
 }

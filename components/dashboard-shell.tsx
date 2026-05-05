@@ -124,10 +124,13 @@ export async function DashboardShell({
                 href="/configuracoes"
               >
                 {authUser.profile_image_url ? (
-                  <img
-                    alt="Perfil"
-                    className="h-7 w-7 rounded-full border border-base-300 object-cover"
-                    src={authUser.profile_image_url}
+                  <span
+                    aria-label="Perfil"
+                    className="h-7 w-7 rounded-full border border-base-300 bg-cover bg-center"
+                    role="img"
+                    style={{
+                      backgroundImage: `url(${String(authUser.profile_image_url)})`,
+                    }}
                   />
                 ) : (
                   <LucideIcon name="user-round" className="h-4 w-4" />

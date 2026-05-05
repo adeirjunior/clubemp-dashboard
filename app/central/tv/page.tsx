@@ -1,11 +1,7 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-};
-
-export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/tv", await searchParams);
+export default function Page() {
+  redirect("/central/noticias");
 }

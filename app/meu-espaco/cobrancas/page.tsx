@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { CompanyGenericList } from "@/components/dashboard/portal-pages";
+import { asRecordArray, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,20 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/meu-espaco/cobrancas", await searchParams);
+  const data = await loadDashboardData(
+    "/portal/meu-espaco/cobrancas",
+    await searchParams,
+    "/meu-espaco/cobrancas",
+  );
+  return (
+    <CompanyGenericList
+      activeMenu="payments"
+      columns={["#", "Descrição", "Valor", "Status", "Link"]}
+      data={data}
+      description="Gerencie cobranças Stripe criadas pela empresa."
+      headerIcon="credit-card"
+      headerTitle="Cobranças Stripe"
+      rows={asRecordArray(data.paymentRequests)}
+    />
+  );
 }

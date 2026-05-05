@@ -1,3 +1,5 @@
+import env from "@/app/env";
+
 export function AuthShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="clubemp-auth-shell min-h-screen bg-base-200">
@@ -5,11 +7,14 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-8">
           <a
             className="text-sm font-black tracking-wide text-base-content"
-            href="/"
+            href={env.MARKETING_APP_URL}
           >
             CLUBEMP
           </a>
-          <a className="link link-hover text-xs text-base-content/70" href="/">
+          <a
+            className="link link-hover text-xs text-base-content/70"
+            href={env.MARKETING_APP_URL}
+          >
             Voltar ao site
           </a>
         </div>

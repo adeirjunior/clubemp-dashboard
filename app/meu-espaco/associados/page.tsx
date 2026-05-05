@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { CompanyGenericList } from "@/components/dashboard/portal-pages";
+import { asRecordArray, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,20 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/meu-espaco/associados", await searchParams);
+  const data = await loadDashboardData(
+    "/portal/meu-espaco/associados",
+    await searchParams,
+    "/meu-espaco/associados",
+  );
+  return (
+    <CompanyGenericList
+      activeMenu="associates"
+      columns={["Nome", "E-mail", "Status", "Comissão"]}
+      data={data}
+      description="Gerencie associados e acompanhe vínculos comerciais."
+      headerIcon="users"
+      headerTitle="Associados"
+      rows={asRecordArray(data.associatedCustomers)}
+    />
+  );
 }

@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { CompanyGenericList } from "@/components/dashboard/portal-pages";
+import { asRecordArray, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,28 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/meu-espaco/compras", await searchParams);
+  const data = await loadDashboardData(
+    "/portal/meu-espaco/compras",
+    await searchParams,
+    "/meu-espaco/compras",
+  );
+  return (
+    <CompanyGenericList
+      activeMenu="sales"
+      columns={[
+        "#",
+        "Data",
+        "Cliente",
+        "Status",
+        "Pagamento",
+        "Total",
+        "Comissão",
+      ]}
+      data={data}
+      description="Acompanhe compras e vendas relacionadas à empresa."
+      headerIcon="shopping-cart"
+      headerTitle="Compras"
+      rows={asRecordArray(data.salesRows || data.items)}
+    />
+  );
 }

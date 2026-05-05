@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { AddCompany } from "@/components/dashboard/portal-pages";
+import { loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,11 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/empresas/adicionar", await searchParams);
+  const data = await loadDashboardData(
+    "/portal/empresas/adicionar",
+    await searchParams,
+    "/empresas/adicionar",
+  );
+
+  return <AddCompany data={data} />;
 }

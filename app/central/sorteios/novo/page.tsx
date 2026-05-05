@@ -1,11 +1,7 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { GiveawayFormPage } from "@/components/dashboard/editorial-pages";
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-};
-
-export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/sorteios/novo", await searchParams);
+export default function Page() {
+  return <GiveawayFormPage formItem={{}} isEdit={false} />;
 }

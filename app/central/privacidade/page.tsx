@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { SimpleCrudTable } from "@/components/dashboard/crud-pages";
+import { asRecordArray, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,30 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/privacidade", await searchParams);
+  const data = await loadDashboardData(
+    "/dashboard/central/privacidade",
+    await searchParams,
+    "/central/privacidade",
+  );
+  const requests = asRecordArray(data.requests);
+
+  return (
+    <SimpleCrudTable
+      activeMenu="privacy"
+      columns={["Titular", "Tipo", "Status", "Solicitado em"]}
+      countLabel={`${data.requestsCount || requests.length} solicitações`}
+      description="Consulte e trate pedidos de acesso, correção, eliminação e portabilidade."
+      emptyMessage="Nenhuma solicitação LGPD encontrada."
+      headerBadge="Administração"
+      headerIcon="shield-check"
+      headerTitle="Solicitações LGPD"
+      rows={requests.map((request) => [
+        String(request.full_name || "-"),
+        String(request.request_type_label || "-"),
+        String(request.status_label || "-"),
+        String(request.created_at || "-"),
+      ])}
+      title="Canal de direitos do titular"
+    />
+  );
 }

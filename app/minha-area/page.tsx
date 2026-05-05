@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { CustomerHome } from "@/components/dashboard/portal-pages";
+import { loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,11 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/minha-area", await searchParams);
+  const data = await loadDashboardData(
+    "/portal/minha-area",
+    await searchParams,
+    "/minha-area",
+  );
+
+  return <CustomerHome data={data} />;
 }

@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { GiveawayFormPage } from "@/components/dashboard/editorial-pages";
+import { asRecord, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,18 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/sorteios/editar", await searchParams);
+  const data = await loadDashboardData(
+    "/dashboard/central/sorteios/editar",
+    await searchParams,
+    "/central/sorteios/editar",
+  );
+
+  return (
+    <GiveawayFormPage
+      formAction={String(data.formAction || "")}
+      formItem={asRecord(data.formItem || data.item || data.giveaway)}
+      isEdit
+      title={String(data.formPageTitle || "Editar sorteio")}
+    />
+  );
 }

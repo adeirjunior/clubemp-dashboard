@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { EditorialModuleList } from "@/components/dashboard/editorial-pages";
+import { asRecordArray, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,13 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/eventos", await searchParams);
+  const data = await loadDashboardData(
+    "/dashboard/central/eventos",
+    await searchParams,
+    "/central/eventos",
+  );
+
+  return (
+    <EditorialModuleList module="eventos" rows={asRecordArray(data.items)} />
+  );
 }

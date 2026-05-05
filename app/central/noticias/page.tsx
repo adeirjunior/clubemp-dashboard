@@ -1,4 +1,5 @@
-import { renderLegacyPage } from "@/lib/render-legacy-page";
+import { NewsListPage } from "@/components/dashboard/editorial-pages";
+import { asRecordArray, loadDashboardData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
@@ -7,5 +8,11 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  return renderLegacyPage("/central/noticias", await searchParams);
+  const data = await loadDashboardData(
+    "/dashboard/central/noticias",
+    await searchParams,
+    "/central/noticias",
+  );
+
+  return <NewsListPage posts={asRecordArray(data.items || data.posts)} />;
 }

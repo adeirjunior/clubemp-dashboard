@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { readBackendSession } from "@/lib/backend";
-import { frontendPathFromBackendPath } from "@/lib/route-map";
+import { frontendPathFromBackendPath } from "@/lib/frontend-routes";
 
 export const dynamic = "force-dynamic";
 
