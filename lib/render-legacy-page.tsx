@@ -236,6 +236,20 @@ async function loadCentralOverviewData() {
     fetchBackendDataPayload("/dashboard/central/sorteios", {}),
   ]);
 
+  const redirectTarget =
+    requests.redirectTo ||
+    payouts.redirectTo ||
+    companies.redirectTo ||
+    customers.redirectTo ||
+    news.redirectTo ||
+    events.redirectTo ||
+    courses.redirectTo ||
+    giveaways.redirectTo;
+
+  if (redirectTarget) {
+    return { redirectTo: redirectTarget } as const;
+  }
+
   const requestItems = Array.isArray(requests.data.items)
     ? requests.data.items
     : [];
@@ -287,6 +301,10 @@ function paymentStatusLabel(status: string) {
 
 async function loadCustomerPaymentsFallbackData() {
   const dashboard = await fetchBackendDataPayload("/portal/minha-area", {});
+  if (dashboard.redirectTo) {
+    return { redirectTo: dashboard.redirectTo } as const;
+  }
+
   const source = normalizeBackendData(dashboard.data);
   const purchases = Array.isArray(source.purchases)
     ? (source.purchases as Record<string, unknown>[])
@@ -360,10 +378,18 @@ export async function renderLegacyPage(
   }
 
   if (pathname === "/central") {
+    const centralOverviewData = await loadCentralOverviewData();
+    if (
+      "redirectTo" in centralOverviewData &&
+      typeof centralOverviewData.redirectTo === "string"
+    ) {
+      redirect(centralOverviewData.redirectTo);
+    }
+
     return (
       <LegacyViewRenderer
         currentPath={pathname}
-        data={normalizeBackendData(await loadCentralOverviewData())}
+        data={normalizeBackendData(centralOverviewData)}
         query={query}
         routePath={route.backendPath}
         view={view}
@@ -387,10 +413,15 @@ export async function renderLegacyPage(
   }
 
   if (pathname === "/minha-area/pagamentos") {
+    const paymentsData = await loadCustomerPaymentsFallbackData();
+    if ("redirectTo" in paymentsData && typeof paymentsData.redirectTo === "string") {
+      redirect(paymentsData.redirectTo);
+    }
+
     return (
       <LegacyViewRenderer
         currentPath={pathname}
-        data={await loadCustomerPaymentsFallbackData()}
+        data={paymentsData}
         query={query}
         routePath={route.backendPath}
         view={view}

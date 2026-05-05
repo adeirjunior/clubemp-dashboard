@@ -89,6 +89,23 @@ export async function fetchBackendDataPayload(
     };
   }
 
+  if (response.status === 401 || response.status === 403) {
+    const payload = (await response.json().catch(() => null)) as {
+      message?: string;
+      redirect_url?: string;
+    } | null;
+
+    return {
+      data: {},
+      redirectTo: sanitizeBackendLocation(
+        payload?.redirect_url ||
+          response.headers.get("location") ||
+          "/login",
+      ),
+      status: response.status,
+    };
+  }
+
   const payload = (await response.json().catch(() => null)) as {
     data?: Record<string, unknown>;
     message?: string;

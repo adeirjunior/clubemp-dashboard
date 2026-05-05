@@ -67,6 +67,13 @@ export async function submitBackendFormAction(
     };
   }
 
+  if (backendPath === "/auth/logout") {
+    return {
+      redirectTo: "/login",
+      success: true,
+    };
+  }
+
   const payload = (await response.json().catch(() => ({}))) as {
     message?: string;
     redirect_url?: string;
