@@ -33,7 +33,11 @@ export function BackendForm({
     }
 
     if (state.redirectTo && state.redirectTo !== "__refresh__") {
-      router.push(state.redirectTo);
+      if (state.redirectTo === "/login") {
+        router.replace(state.redirectTo);
+      } else {
+        router.push(state.redirectTo);
+      }
       router.refresh();
       return;
     }

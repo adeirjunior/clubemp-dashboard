@@ -32,6 +32,12 @@ export default async function Page({ searchParams }: PageProps) {
         String(payout.status || "-"),
         String(payout.created_at || "-"),
       ])}
+      rowActions={payouts.map((payout) => [
+        {
+          href: `/central/repasses/ver?id=${String(payout.id || 0)}`,
+          label: "Ver",
+        },
+      ])}
       title="Gestão de repasses"
     />
   );

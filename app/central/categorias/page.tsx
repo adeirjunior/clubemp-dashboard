@@ -27,6 +27,8 @@ export default async function Page({ searchParams }: PageProps) {
         "Atualizado em",
       ]}
       countLabel={`${categories.length} categorias`}
+      createHref="/central/categorias/novo"
+      createLabel="Nova categoria"
       description="Gerencie categorias para empresas, conteúdo editorial e organização operacional."
       emptyMessage="Nenhuma categoria encontrada."
       headerBadge="Módulo CRUD"
@@ -39,6 +41,17 @@ export default async function Page({ searchParams }: PageProps) {
         String(category.cac_commission_label || "Padrão do sistema"),
         String(category.linked_companies || "0"),
         String(category.updated_at || "-"),
+      ])}
+      rowActions={categories.map((category) => [
+        {
+          href: `/central/categorias/ver?id=${String(category.id || 0)}`,
+          label: "Ver",
+        },
+        {
+          href: `/central/categorias/editar?id=${String(category.id || 0)}`,
+          label: "Editar",
+          tone: "primary",
+        },
       ])}
       title="Categorias da plataforma"
     />

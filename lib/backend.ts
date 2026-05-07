@@ -1,8 +1,11 @@
 import { cookies } from "next/headers";
+import { Agent } from "undici";
 import { decodeBackendSessionState } from "./backend-session";
 import { frontendPathFromBackendPath } from "./frontend-routes";
 
 export const BACKEND_STATE_COOKIE = "clubemp_backend_state";
+
+let selfSignedBackendAgent: Agent | undefined;
 
 function backendBaseUrl() {
   const raw =
@@ -18,18 +21,13 @@ function backendBaseUrl() {
   return raw.replace(/\/+$/, "");
 }
 
-function enableInsecureTlsForLocalBackend() {
-  if (
-    process.env.NODE_ENV !== "production" &&
-    process.env.BACKEND_ALLOW_SELF_SIGNED_TLS === "1"
-  ) {
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-  }
-}
-
 export function backendApiUrl(path: string, searchParams?: URLSearchParams) {
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const base = backendBaseUrl();
+  const rawPath = path.startsWith("/") ? path : `/${path}`;
+  const normalizedPath =
+    base.endsWith("/api") && rawPath.startsWith("/api/")
+      ? rawPath.slice(4)
+      : rawPath;
   const url = new URL(`${base}${normalizedPath}`);
 
   if (searchParams) {
@@ -39,6 +37,33 @@ export function backendApiUrl(path: string, searchParams?: URLSearchParams) {
   }
 
   return url.toString();
+}
+
+function allowSelfSignedBackendTls() {
+  const value = process.env.BACKEND_ALLOW_SELF_SIGNED_TLS?.trim();
+  return value === "1" || value === "true";
+}
+
+function backendFetchInit(init: RequestInit): RequestInit & {
+  dispatcher?: Agent;
+} {
+  if (
+    !allowSelfSignedBackendTls() ||
+    !backendBaseUrl().startsWith("https://")
+  ) {
+    return init;
+  }
+
+  selfSignedBackendAgent ??= new Agent({
+    connect: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  return {
+    ...init,
+    dispatcher: selfSignedBackendAgent,
+  };
 }
 
 function appendQuery(
@@ -63,21 +88,23 @@ export async function fetchBackendDataPayload(
   path: string,
   query: Record<string, string | string[] | undefined>,
 ) {
-  enableInsecureTlsForLocalBackend();
   const cookieStore = await cookies();
   const backendState = cookieStore.get(BACKEND_STATE_COOKIE)?.value ?? "";
   const url = new URL(backendApiUrl(path));
   appendQuery(url, query);
 
-  const response = await fetch(url, {
-    cache: "no-store",
-    headers: {
-      Accept: "application/json",
-      "X-Requested-With": "XMLHttpRequest",
-      ...(backendState ? { "X-Clubemp-Session-State": backendState } : {}),
-    },
-    redirect: "manual",
-  });
+  const response = await fetch(
+    url,
+    backendFetchInit({
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        ...(backendState ? { "X-Clubemp-Session-State": backendState } : {}),
+      },
+      redirect: "manual",
+    }),
+  );
 
   if (response.status >= 300 && response.status < 400) {
     return {
@@ -165,7 +192,6 @@ export async function fetchBackendResponse(
     accept?: string;
   },
 ) {
-  enableInsecureTlsForLocalBackend();
   const cookieStore = await cookies();
   const backendState = cookieStore.get(BACKEND_STATE_COOKIE)?.value ?? "";
   const headers = new Headers(init?.headers);
@@ -183,10 +209,13 @@ export async function fetchBackendResponse(
     headers.set("X-Clubemp-Session-State", backendState);
   }
 
-  return fetch(backendApiUrl(path), {
-    ...init,
-    cache: "no-store",
-    headers,
-    redirect: "manual",
-  });
+  return fetch(
+    backendApiUrl(path),
+    backendFetchInit({
+      ...init,
+      cache: "no-store",
+      headers,
+      redirect: "manual",
+    }),
+  );
 }

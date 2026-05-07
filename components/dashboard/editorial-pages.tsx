@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { BackendForm } from "@/components/backend-form";
-import { DashboardShell } from "@/components/dashboard-shell";
 import {
   type ModuleFormField,
   ModuleFormPage,
@@ -87,67 +86,77 @@ export function EditorialModuleList({
   const config = moduleConfig[module];
 
   return (
-    <DashboardShell
-      activeMenu={module}
-      headerIcon={config.headerIcon}
-      headerTitle={config.headerTitle}
-    >
-      <section className="mt-4 space-y-4">
-        <article className="card border border-base-300 bg-base-100 shadow-sm">
-          <div className="card-body p-5">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="space-y-1">
-                <h2 className="text-xl font-bold">{config.title}</h2>
-                <p className="text-sm text-base-content/70">
-                  {config.description}
-                </p>
-              </div>
-              <Link className="btn btn-primary btn-sm" href={config.createHref}>
-                Novo
-              </Link>
+    <section className="mt-4 space-y-4">
+      <article className="card border border-base-300 bg-base-100 shadow-sm">
+        <div className="card-body p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="space-y-1">
+              <h2 className="text-xl font-bold">{config.title}</h2>
+              <p className="text-sm text-base-content/70">
+                {config.description}
+              </p>
             </div>
+            <Link className="btn btn-primary btn-sm" href={config.createHref}>
+              Novo
+            </Link>
           </div>
-        </article>
+        </div>
+      </article>
 
-        <article className="card border border-base-300 bg-base-100 shadow-sm">
-          <div className="card-body p-0">
-            <div className="overflow-x-auto">
-              <table className="table table-zebra">
-                <thead>
+      <article className="card border border-base-300 bg-base-100 shadow-sm">
+        <div className="card-body p-0">
+          <div className="overflow-x-auto">
+            <table className="table table-zebra">
+              <thead>
+                <tr>
+                  {[...config.columns, "Ações"].map((column) => (
+                    <th key={column}>{column}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.length === 0 ? (
                   <tr>
-                    {config.columns.map((column) => (
-                      <th key={column}>{column}</th>
-                    ))}
+                    <td
+                      className="py-8 text-center text-sm text-base-content/65"
+                      colSpan={config.columns.length + 1}
+                    >
+                      {config.emptyMessage}
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {rows.length === 0 ? (
-                    <tr>
-                      <td
-                        className="py-8 text-center text-sm text-base-content/65"
-                        colSpan={config.columns.length}
-                      >
-                        {config.emptyMessage}
+                ) : (
+                  rows.map((row) => (
+                    <tr key={String(row.id || row.title || row.slug || "-")}>
+                      {moduleCells(module, row).map((cell, index) => (
+                        <td key={`${String(row.id || row.title)}-${index}`}>
+                          {cell}
+                        </td>
+                      ))}
+                      <td>
+                        <div className="flex flex-wrap gap-2">
+                          <Link
+                            className="btn btn-outline btn-xs"
+                            href={`/central/${module}/ver?id=${String(row.id || 0)}`}
+                          >
+                            Ver
+                          </Link>
+                          <Link
+                            className="btn btn-primary btn-xs"
+                            href={`/central/${module}/editar?id=${String(row.id || 0)}`}
+                          >
+                            Editar
+                          </Link>
+                        </div>
                       </td>
                     </tr>
-                  ) : (
-                    rows.map((row) => (
-                      <tr key={String(row.id || row.title || row.slug || "-")}>
-                        {moduleCells(module, row).map((cell, index) => (
-                          <td key={`${String(row.id || row.title)}-${index}`}>
-                            {cell}
-                          </td>
-                        ))}
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        </article>
-      </section>
-    </DashboardShell>
+        </div>
+      </article>
+    </section>
   );
 }
 
@@ -515,84 +524,78 @@ export function EditorialShowPage({
 
 export function NewsListPage({ posts }: { posts: Row[] }) {
   return (
-    <DashboardShell
-      activeMenu="news"
-      headerIcon="newspaper"
-      headerTitle="Notícias"
-    >
-      <section className="mt-4 space-y-5">
-        <article className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm sm:p-6">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="space-y-1">
-              <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">
-                TV Clubemp
-              </p>
-              <h2 className="text-2xl font-black">Notícias</h2>
-              <p className="max-w-2xl text-sm text-base-content/70">
-                Gerencie o ciclo editorial com páginas separadas para criação,
-                visualização e edição.
-              </p>
-            </div>
-            <Link
-              className="btn btn-primary rounded-2xl"
-              href="/central/noticias/novo"
-            >
-              Nova notícia
-            </Link>
+    <section className="mt-4 space-y-5">
+      <article className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">
+              TV Clubemp
+            </p>
+            <h2 className="text-2xl font-black">Notícias</h2>
+            <p className="max-w-2xl text-sm text-base-content/70">
+              Gerencie o ciclo editorial com páginas separadas para criação,
+              visualização e edição.
+            </p>
           </div>
-        </article>
-
-        <div className="grid gap-4">
-          {posts.length === 0 ? (
-            <article className="rounded-3xl border border-dashed border-base-300 bg-base-100 p-8 text-center text-sm text-base-content/65 shadow-sm">
-              Nenhuma notícia cadastrada ainda.
-            </article>
-          ) : (
-            posts.map((post) => (
-              <article
-                key={String(post.id || post.slug || post.title || "-")}
-                className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:border-primary/40 hover:shadow-md sm:p-6"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className={`badge ${String(post.published_badge || "badge-outline")}`}
-                      >
-                        {String(post.published_label || "Rascunho")}
-                      </span>
-                      <span className="badge badge-outline">
-                        {String(post.review_label || "Sem revisão")}
-                      </span>
-                    </div>
-                    <h3 className="mt-3 text-xl font-black">
-                      {String(post.title || "-")}
-                    </h3>
-                    <p className="mt-2 text-sm text-base-content/65">
-                      {String(post.summary || "Sem resumo editorial.")}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-2 sm:min-w-[10rem]">
-                    <Link
-                      className="btn btn-outline btn-sm rounded-2xl"
-                      href={`/central/noticias/ver?id=${String(post.id || 0)}`}
-                    >
-                      Ver
-                    </Link>
-                    <Link
-                      className="btn btn-primary btn-sm rounded-2xl"
-                      href={`/central/noticias/editar?id=${String(post.id || 0)}`}
-                    >
-                      Editar
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            ))
-          )}
+          <Link
+            className="btn btn-primary rounded-2xl"
+            href="/central/noticias/novo"
+          >
+            Nova notícia
+          </Link>
         </div>
-      </section>
-    </DashboardShell>
+      </article>
+
+      <div className="grid gap-4">
+        {posts.length === 0 ? (
+          <article className="rounded-3xl border border-dashed border-base-300 bg-base-100 p-8 text-center text-sm text-base-content/65 shadow-sm">
+            Nenhuma notícia cadastrada ainda.
+          </article>
+        ) : (
+          posts.map((post) => (
+            <article
+              key={String(post.id || post.slug || post.title || "-")}
+              className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:border-primary/40 hover:shadow-md sm:p-6"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={`badge ${String(post.published_badge || "badge-outline")}`}
+                    >
+                      {String(post.published_label || "Rascunho")}
+                    </span>
+                    <span className="badge badge-outline">
+                      {String(post.review_label || "Sem revisão")}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 text-xl font-black">
+                    {String(post.title || "-")}
+                  </h3>
+                  <p className="mt-2 text-sm text-base-content/65">
+                    {String(post.summary || "Sem resumo editorial.")}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2 sm:min-w-[10rem]">
+                  <Link
+                    className="btn btn-outline btn-sm rounded-2xl"
+                    href={`/central/noticias/ver?id=${String(post.id || 0)}`}
+                  >
+                    Ver
+                  </Link>
+                  <Link
+                    className="btn btn-primary btn-sm rounded-2xl"
+                    href={`/central/noticias/editar?id=${String(post.id || 0)}`}
+                  >
+                    Editar
+                  </Link>
+                </div>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -609,7 +612,7 @@ export function NewsFormPage({
 }) {
   return (
     <ModuleFormPage
-      action={formAction || (isEdit ? "#" : "/central/blog")}
+      action={formAction || (isEdit ? "#" : "/dashboard/central/blog")}
       backHref="/central/noticias"
       description={
         isEdit
@@ -681,129 +684,121 @@ export function NewsShowPage({
   post: Row;
 }) {
   return (
-    <DashboardShell
-      activeMenu="news"
-      headerIcon="eye"
-      headerTitle="Ver notícia"
-    >
-      <section className="mt-4 space-y-5">
+    <section className="mt-4 space-y-5">
+      <article className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">
+              TV Clubemp
+            </p>
+            <h2 className="text-2xl font-black">{String(post.title || "-")}</h2>
+            <p className="text-sm text-base-content/65">
+              Acompanhe o estado editorial e revise a matéria antes de novas
+              publicações.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              className="btn btn-outline rounded-2xl"
+              href="/central/noticias"
+            >
+              Voltar
+            </Link>
+            <Link
+              className="btn btn-primary rounded-2xl"
+              href={`/central/noticias/editar?id=${String(post.id || 0)}`}
+            >
+              Editar
+            </Link>
+          </div>
+        </div>
+      </article>
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          ["Slug", String(post.slug || "-")],
+          [
+            "Status",
+            String(post.publication_label || post.publication_status || "-"),
+          ],
+          ["Revisão", String(post.review_label || post.review_status || "-")],
+          ["Publicação", String(post.published_at || "-")],
+        ].map(([label, value]) => (
+          <article
+            key={label}
+            className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm"
+          >
+            <p className="text-xs uppercase text-base-content/55">{label}</p>
+            <p className="mt-2 text-lg font-bold">{value}</p>
+          </article>
+        ))}
+      </section>
+
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_20rem]">
         <article className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm sm:p-6">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="space-y-1">
+          <div className="space-y-4">
+            <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">
-                TV Clubemp
+                Resumo
               </p>
-              <h2 className="text-2xl font-black">
-                {String(post.title || "-")}
-              </h2>
-              <p className="text-sm text-base-content/65">
-                Acompanhe o estado editorial e revise a matéria antes de novas
-                publicações.
+              <p className="mt-2 text-sm leading-7 text-base-content/75">
+                {String(post.summary || "Sem resumo editorial.")}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Link
-                className="btn btn-outline rounded-2xl"
-                href="/central/noticias"
-              >
-                Voltar
-              </Link>
-              <Link
-                className="btn btn-primary rounded-2xl"
-                href={`/central/noticias/editar?id=${String(post.id || 0)}`}
-              >
-                Editar
-              </Link>
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">
+                Conteúdo
+              </p>
+              <div className="mt-4 whitespace-pre-line text-sm leading-7 text-base-content/85">
+                {String(
+                  post.content ||
+                    post.content_body ||
+                    post.body ||
+                    (contentHtml || "")
+                      .replace(/<[^>]+>/g, " ")
+                      .replace(/\s+/g, " ")
+                      .trim() ||
+                    "Sem conteúdo editorial.",
+                )}
+              </div>
             </div>
           </div>
         </article>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {[
-            ["Slug", String(post.slug || "-")],
-            [
-              "Status",
-              String(post.publication_label || post.publication_status || "-"),
-            ],
-            ["Revisão", String(post.review_label || post.review_status || "-")],
-            ["Publicação", String(post.published_at || "-")],
-          ].map(([label, value]) => (
-            <article
-              key={label}
-              className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm"
-            >
-              <p className="text-xs uppercase text-base-content/55">{label}</p>
-              <p className="mt-2 text-lg font-bold">{value}</p>
-            </article>
-          ))}
-        </section>
-
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_20rem]">
-          <article className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm sm:p-6">
-            <div className="space-y-4">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">
-                  Resumo
-                </p>
-                <p className="mt-2 text-sm leading-7 text-base-content/75">
-                  {String(post.summary || "Sem resumo editorial.")}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">
-                  Conteúdo
-                </p>
-                <div className="mt-4 whitespace-pre-line text-sm leading-7 text-base-content/85">
-                  {String(
-                    post.content ||
-                      post.content_body ||
-                      post.body ||
-                      (contentHtml || "")
-                        .replace(/<[^>]+>/g, " ")
-                        .replace(/\s+/g, " ")
-                        .trim() ||
-                      "Sem conteúdo editorial.",
-                  )}
-                </div>
-              </div>
+        <aside className="space-y-5">
+          <article className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm">
+            <h3 className="text-base font-black">Ações rápidas</h3>
+            <div className="mt-4 flex flex-col gap-3">
+              {[
+                [
+                  String(post.publication_status || "") === "inactive"
+                    ? "draft"
+                    : "inactive",
+                  String(post.publication_status || "") === "inactive"
+                    ? "Reativar notícia"
+                    : "Desativar notícia",
+                ],
+                ["published", "Publicar agora"],
+                ["review", "Enviar para revisão"],
+              ].map(([status, label]) => (
+                <BackendForm
+                  key={status}
+                  backendPath={`/dashboard/central/blog/${String(post.id || 0)}/status`}
+                >
+                  <input name="status" type="hidden" value={status} />
+                  <button
+                    className="btn btn-outline w-full rounded-2xl"
+                    type="submit"
+                  >
+                    {label}
+                  </button>
+                </BackendForm>
+              ))}
             </div>
           </article>
-
-          <aside className="space-y-5">
-            <article className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm">
-              <h3 className="text-base font-black">Ações rápidas</h3>
-              <div className="mt-4 flex flex-col gap-3">
-                {[
-                  [
-                    String(post.publication_status || "") === "inactive"
-                      ? "draft"
-                      : "inactive",
-                    String(post.publication_status || "") === "inactive"
-                      ? "Reativar notícia"
-                      : "Desativar notícia",
-                  ],
-                  ["published", "Publicar agora"],
-                  ["review", "Enviar para revisão"],
-                ].map(([status, label]) => (
-                  <BackendForm
-                    key={status}
-                    backendPath={`/central/blog/${String(post.id || 0)}/status`}
-                  >
-                    <input name="status" type="hidden" value={status} />
-                    <button
-                      className="btn btn-outline w-full rounded-2xl"
-                      type="submit"
-                    >
-                      {label}
-                    </button>
-                  </BackendForm>
-                ))}
-              </div>
-            </article>
-          </aside>
-        </div>
-      </section>
-    </DashboardShell>
+        </aside>
+      </div>
+    </section>
   );
 }
 

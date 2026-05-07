@@ -32,6 +32,12 @@ export default async function Page({ searchParams }: PageProps) {
         String(customer.card_code || "-"),
         String(customer.linked_companies || "Sem vínculo"),
       ])}
+      rowActions={customers.map((customer) => [
+        {
+          href: `/central/clientes/ver?id=${String(customer.id || 0)}`,
+          label: "Ver",
+        },
+      ])}
       title="Usuários e clientes"
     />
   );

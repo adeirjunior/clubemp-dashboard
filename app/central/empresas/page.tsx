@@ -32,6 +32,12 @@ export default async function Page({ searchParams }: PageProps) {
         String(company.contact_email || "-"),
         [company.city, company.state].filter(Boolean).join(" - ") || "-",
       ])}
+      rowActions={companies.map((company) => [
+        {
+          href: `/central/empresas/ver?id=${String(company.id || 0)}`,
+          label: "Ver",
+        },
+      ])}
       title="Empresas cadastradas"
     />
   );

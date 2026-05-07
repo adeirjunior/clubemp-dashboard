@@ -15,6 +15,11 @@ type BackendActionState = {
 
 async function persistBackendState(response: Response, backendPath: string) {
   const cookieStore = await cookies();
+  if (backendPath === "/auth/logout") {
+    cookieStore.delete(BACKEND_STATE_COOKIE);
+    return;
+  }
+
   const nextState = response.headers.get("x-clubemp-session-state");
 
   if (nextState) {
@@ -25,10 +30,6 @@ async function persistBackendState(response: Response, backendPath: string) {
       secure: process.env.NODE_ENV === "production",
     });
     return;
-  }
-
-  if (backendPath === "/auth/logout") {
-    cookieStore.delete(BACKEND_STATE_COOKIE);
   }
 }
 
@@ -51,6 +52,7 @@ export async function submitBackendFormAction(
 
   formData.delete("__backendPath");
   formData.delete("__onSuccess");
+  removeEmptyFileFields(formData);
 
   const response = await fetchBackendResponse(backendPath, {
     body: formData,
@@ -87,6 +89,13 @@ export async function submitBackendFormAction(
     };
   }
 
+  if (backendPath === "/dashboard/contexto") {
+    return {
+      redirectTo: "/",
+      success: true,
+    };
+  }
+
   return {
     redirectTo:
       typeof payload.redirect_url === "string" && payload.redirect_url
@@ -96,6 +105,29 @@ export async function submitBackendFormAction(
           : "",
     success: true,
   };
+}
+
+function removeEmptyFileFields(formData: FormData) {
+  for (const [key, value] of Array.from(formData.entries())) {
+    if (!isFormDataFile(value)) {
+      continue;
+    }
+
+    if (value.size === 0) {
+      formData.delete(key);
+    }
+  }
+}
+
+function isFormDataFile(value: FormDataEntryValue): value is File {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "size" in value &&
+    typeof value.size === "number" &&
+    "arrayBuffer" in value &&
+    typeof value.arrayBuffer === "function"
+  );
 }
 
 export async function createPaymentIntentAction(token: string) {

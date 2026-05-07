@@ -1,12 +1,14 @@
 import Link from "next/link";
-import { DashboardShell } from "@/components/dashboard-shell";
 import { LucideIcon } from "@/components/lucide-icon";
 import { loadCentralOverviewData } from "@/lib/dashboard-data";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page() {
-  const data = await loadCentralOverviewData();
+export function CentralOverview({
+  data,
+}: {
+  data: Awaited<ReturnType<typeof loadCentralOverviewData>>;
+}) {
   const financeMetrics = (data.financeMetrics as Record<string, string>) || {};
   const financeCards = [
     [
@@ -93,11 +95,7 @@ export default async function Page() {
   ];
 
   return (
-    <DashboardShell
-      activeMenu="overview"
-      headerIcon="layout-dashboard"
-      headerTitle="Visão geral"
-    >
+    <>
       <section className="mt-4 grid gap-4 md:grid-cols-3">
         {financeCards.map(([label, value, help, icon]) => (
           <article
@@ -131,6 +129,12 @@ export default async function Page() {
           </Link>
         ))}
       </section>
-    </DashboardShell>
+    </>
   );
+}
+
+export default async function Page() {
+  const data = await loadCentralOverviewData();
+
+  return <CentralOverview data={data} />;
 }

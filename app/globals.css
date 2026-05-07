@@ -28,10 +28,6 @@ body {
     linear-gradient(165deg, #0b0907, #141008);
 }
 
-.clubemp-dashboard-shell {
-  background: var(--clubemp-shell-bg);
-}
-
 .clubemp-rich-editor h2,
 .clubemp-rich-preview h2 {
   font-size: 1.5rem;

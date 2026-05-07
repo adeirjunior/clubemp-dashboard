@@ -31,6 +31,12 @@ export default async function Page({ searchParams }: PageProps) {
         String(request.status_label || "-"),
         String(request.created_at || "-"),
       ])}
+      rowActions={requests.map((request) => [
+        {
+          href: `/central/privacidade/ver?id=${String(request.id || 0)}`,
+          label: "Ver",
+        },
+      ])}
       title="Canal de direitos do titular"
     />
   );

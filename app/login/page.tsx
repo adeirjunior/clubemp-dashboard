@@ -3,6 +3,11 @@ import { AuthShell } from "@/components/auth-shell";
 import { BackendForm } from "@/components/backend-form";
 import { LucideIcon } from "@/components/lucide-icon";
 import { readBackendSession } from "@/lib/backend";
+import {
+  getActiveDashboardContext,
+  getDashboardContextLabel,
+  getDashboardContextPath,
+} from "@/lib/dashboard-context.mjs";
 import { frontendPathFromBackendPath } from "@/lib/frontend-routes";
 
 export const dynamic = "force-dynamic";
@@ -16,10 +21,17 @@ export default async function Page() {
   const success =
     typeof session.flash_success === "string" ? session.flash_success : "";
   const hasAuthenticatedUser = Boolean(session.auth_user);
-  const authRedirect =
-    typeof session.dashboard_contexts?.[0]?.path === "string"
-      ? frontendPathFromBackendPath(session.dashboard_contexts[0].path)
-      : "/central";
+  const activeContext = getActiveDashboardContext(
+    session.dashboard_contexts,
+    session.active_dashboard_context,
+  );
+  const authRedirect = frontendPathFromBackendPath(
+    getDashboardContextPath(activeContext),
+  );
+  const currentContextLabel = getDashboardContextLabel(
+    activeContext,
+    "Modo atual",
+  );
 
   return (
     <AuthShell>
@@ -38,6 +50,9 @@ export default async function Page() {
                 <p className="max-w-xl text-sm text-base-content/75 sm:text-base">
                   Depois do login, o sistema mostra automaticamente os modos de
                   visualização, empresas e áreas que o seu usuário pode acessar.
+                </p>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary/80">
+                  {currentContextLabel}
                 </p>
               </div>
               <div className="grid gap-3 text-sm text-base-content/85">

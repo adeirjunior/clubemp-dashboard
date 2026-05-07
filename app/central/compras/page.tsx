@@ -1,4 +1,4 @@
-import { DashboardShell } from "@/components/dashboard-shell";
+import Link from "next/link";
 import { LucideIcon } from "@/components/lucide-icon";
 import {
   asRecord,
@@ -38,12 +38,7 @@ export default async function Page({ searchParams }: PageProps) {
   };
 
   return (
-    <DashboardShell
-      activeMenu="sales"
-      headerBadge={`${String(summary.sales_count || 0)} vendas`}
-      headerIcon="shopping-cart"
-      headerTitle="Compras e vendas"
-    >
+    <>
       <section className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {[
           [
@@ -95,6 +90,7 @@ export default async function Page({ searchParams }: PageProps) {
                     <th>Pagamento</th>
                     <th>Total</th>
                     <th>Comissão</th>
+                    <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -102,7 +98,7 @@ export default async function Page({ searchParams }: PageProps) {
                     <tr>
                       <td
                         className="text-center text-sm text-base-content/65"
-                        colSpan={9}
+                        colSpan={10}
                       >
                         Nenhuma compra registrada.
                       </td>
@@ -123,6 +119,14 @@ export default async function Page({ searchParams }: PageProps) {
                         <td>{String(sale.payment_status || "-")}</td>
                         <td>{String(sale.total_amount || "R$ 0,00")}</td>
                         <td>{String(sale.commission_amount || "R$ 0,00")}</td>
+                        <td>
+                          <Link
+                            className="btn btn-outline btn-xs"
+                            href={`/central/compras/ver?id=${String(sale.id || 0)}`}
+                          >
+                            Ver
+                          </Link>
+                        </td>
                       </tr>
                     ))
                   )}
@@ -132,6 +136,6 @@ export default async function Page({ searchParams }: PageProps) {
           </div>
         </article>
       </section>
-    </DashboardShell>
+    </>
   );
 }

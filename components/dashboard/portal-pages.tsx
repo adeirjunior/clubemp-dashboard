@@ -1,10 +1,5 @@
 import Link from "next/link";
 import { BackendForm } from "@/components/backend-form";
-import {
-  companyNavItems,
-  customerNavItems,
-  DashboardShell,
-} from "@/components/dashboard-shell";
 import { LucideIcon } from "@/components/lucide-icon";
 import {
   asRecord,
@@ -19,54 +14,45 @@ export function CustomerHome({ data }: { data: DashboardData }) {
   const summary = asRecord(data.summary);
 
   return (
-    <DashboardShell
-      activeMenu="overview"
-      headerIcon="layout-dashboard"
-      headerTitle="Minha área"
-      navItems={customerNavItems}
-      panelDescription="Acesso do cliente"
-      panelTitle="Portal do cliente"
-    >
-      <main className="mx-auto max-w-6xl py-6 sm:py-8">
-        <header className="mb-6 flex flex-col gap-4 rounded-2xl border border-base-300 bg-base-100 p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-black tracking-tight">
-              Minha Área do Cliente
-            </h1>
-            <p className="text-sm text-base-content/70">
-              <span className="badge badge-ghost badge-sm uppercase">
-                {String(profile.membership_label || "Cliente associado")}
-              </span>
-            </p>
-          </div>
-          <Link className="btn btn-primary btn-sm" href="/meu-cartao">
-            <LucideIcon className="h-4 w-4" name="qr-code" />
-            Meu Cartão
-          </Link>
-        </header>
+    <main className="mx-auto max-w-6xl py-6 sm:py-8">
+      <header className="mb-6 flex flex-col gap-4 rounded-2xl border border-base-300 bg-base-100 p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight">
+            Minha Área do Cliente
+          </h1>
+          <p className="text-sm text-base-content/70">
+            <span className="badge badge-ghost badge-sm uppercase">
+              {String(profile.membership_label || "Cliente associado")}
+            </span>
+          </p>
+        </div>
+        <Link className="btn btn-primary btn-sm" href="/meu-cartao">
+          <LucideIcon className="h-4 w-4" name="qr-code" />
+          Meu Cartão
+        </Link>
+      </header>
 
-        <section className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-          {[
-            ["Compras", String(summary.sales_count || 0)],
-            ["Total gasto", String(summary.total_spent || "0")],
-            ["Pagas", String(summary.paid_count || 0)],
-            ["Pendentes", String(summary.pending_count || 0)],
-          ].map(([label, value]) => (
-            <article
-              key={label}
-              className="card border border-base-300 bg-base-100 shadow-sm"
-            >
-              <div className="card-body p-4 sm:p-6">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-base-content/50">
-                  {label}
-                </p>
-                <p className="text-xl font-black sm:text-2xl">{value}</p>
-              </div>
-            </article>
-          ))}
-        </section>
-      </main>
-    </DashboardShell>
+      <section className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+        {[
+          ["Compras", String(summary.sales_count || 0)],
+          ["Total gasto", String(summary.total_spent || "0")],
+          ["Pagas", String(summary.paid_count || 0)],
+          ["Pendentes", String(summary.pending_count || 0)],
+        ].map(([label, value]) => (
+          <article
+            key={label}
+            className="card border border-base-300 bg-base-100 shadow-sm"
+          >
+            <div className="card-body p-4 sm:p-6">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-base-content/50">
+                {label}
+              </p>
+              <p className="text-xl font-black sm:text-2xl">{value}</p>
+            </div>
+          </article>
+        ))}
+      </section>
+    </main>
   );
 }
 
@@ -74,14 +60,7 @@ export function CustomerPayments({ data }: { data: DashboardData }) {
   const paymentRequests = asRecordArray(data.paymentRequests);
 
   return (
-    <DashboardShell
-      activeMenu="payments"
-      headerIcon="credit-card"
-      headerTitle="Meus pagamentos"
-      navItems={customerNavItems}
-      panelDescription="Acesso do cliente"
-      panelTitle="Portal do cliente"
-    >
+    <>
       <section className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -133,7 +112,7 @@ export function CustomerPayments({ data }: { data: DashboardData }) {
           </div>
         </article>
       </section>
-    </DashboardShell>
+    </>
   );
 }
 
@@ -142,93 +121,86 @@ export function AccountSettings({ data }: { data: DashboardData }) {
   const themeOptions = asRecord(data.themeOptions);
 
   return (
-    <DashboardShell
-      headerIcon="settings"
-      headerTitle="Configurações da conta"
-      navItems={customerNavItems}
-      panelDescription="Acesso do cliente"
-      panelTitle="Minha conta"
-    >
-      <main className="mx-auto max-w-4xl py-6">
-        <section className="mb-5 rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
-          <h1 className="text-xl font-bold">Configurações da conta</h1>
-          <p className="text-sm text-base-content/70">
-            Atualize seus dados pessoais, imagem e tema da interface.
-          </p>
-        </section>
+    <main className="mx-auto max-w-4xl py-6">
+      <section className="mb-5 rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
+        <h1 className="text-xl font-bold">Configurações da conta</h1>
+        <p className="text-sm text-base-content/70">
+          Atualize seus dados pessoais, imagem e tema da interface.
+        </p>
+      </section>
 
-        <section className="card border border-base-300 bg-base-100 shadow-sm">
-          <div className="card-body">
-            <BackendForm backendPath="/configuracoes" className="space-y-4">
-              <div className="flex items-center gap-3">
-                {profile.profile_image_url ? (
-                  <div
-                    aria-label="Imagem de perfil"
-                    className="h-16 w-16 rounded-full border border-base-300 bg-cover bg-center"
-                    role="img"
-                    style={{
-                      backgroundImage: `url(${String(profile.profile_image_url)})`,
-                    }}
-                  />
-                ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-base-300 text-xs text-base-content/60">
-                    Sem foto
-                  </div>
-                )}
-                <label className="form-control w-full">
-                  <span className="label-text mb-1 font-semibold">
-                    Imagem de perfil
-                  </span>
-                  <input
-                    accept="image/jpeg,image/png,image/webp"
-                    className="file-input file-input-bordered w-full"
-                    name="profile_image"
-                    type="file"
-                  />
-                </label>
-              </div>
-              <TextInput
-                defaultValue={String(profile.name || "")}
-                label="Nome"
-                name="name"
-                required
-              />
-              <label className="form-control w-full">
-                <span className="label-text mb-1 font-semibold">E-mail</span>
-                <input
-                  className="input input-bordered w-full"
-                  readOnly
-                  type="email"
-                  value={String(profile.email || "")}
+      <section className="card border border-base-300 bg-base-100 shadow-sm">
+        <div className="card-body">
+          <BackendForm
+            backendPath="/portal/configuracoes"
+            className="space-y-4"
+          >
+            <div className="flex items-center gap-3">
+              {profile.profile_image_url ? (
+                <div
+                  aria-label="Imagem de perfil"
+                  className="h-16 w-16 rounded-full border border-base-300 bg-cover bg-center"
+                  role="img"
+                  style={{
+                    backgroundImage: `url(${String(profile.profile_image_url)})`,
+                  }}
                 />
-              </label>
+              ) : (
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-base-300 text-xs text-base-content/60">
+                  Sem foto
+                </div>
+              )}
               <label className="form-control w-full">
                 <span className="label-text mb-1 font-semibold">
-                  Tema do site
+                  Imagem de perfil
                 </span>
-                <select
-                  className="select select-bordered w-full"
-                  defaultValue={String(
-                    profile.preferred_theme || "clubemp-luxe",
-                  )}
-                  name="preferred_theme"
-                >
-                  {Object.entries(themeOptions).map(([key, label]) => (
-                    <option key={key} value={key}>
-                      {String(label)}
-                    </option>
-                  ))}
-                </select>
+                <input
+                  accept="image/jpeg,image/png,image/webp"
+                  className="file-input file-input-bordered w-full"
+                  name="profile_image"
+                  type="file"
+                />
               </label>
-              <TextInput label="Nova senha" name="password" type="password" />
-              <button className="btn btn-primary w-full" type="submit">
-                Salvar configurações
-              </button>
-            </BackendForm>
-          </div>
-        </section>
-      </main>
-    </DashboardShell>
+            </div>
+            <TextInput
+              defaultValue={String(profile.name || "")}
+              label="Nome"
+              name="name"
+              required
+            />
+            <label className="form-control w-full">
+              <span className="label-text mb-1 font-semibold">E-mail</span>
+              <input
+                className="input input-bordered w-full"
+                readOnly
+                type="email"
+                value={String(profile.email || "")}
+              />
+            </label>
+            <label className="form-control w-full">
+              <span className="label-text mb-1 font-semibold">
+                Tema do site
+              </span>
+              <select
+                className="select select-bordered w-full"
+                defaultValue={String(profile.preferred_theme || "clubemp-luxe")}
+                name="preferred_theme"
+              >
+                {Object.entries(themeOptions).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {String(label)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <TextInput label="Nova senha" name="password" type="password" />
+            <button className="btn btn-primary w-full" type="submit">
+              Salvar configurações
+            </button>
+          </BackendForm>
+        </div>
+      </section>
+    </main>
   );
 }
 
@@ -239,14 +211,7 @@ export function CompanyHome({ data }: { data: DashboardData }) {
   const sales = asRecord(data.companySalesSummary);
 
   return (
-    <DashboardShell
-      activeMenu="overview"
-      headerIcon="layout-dashboard"
-      headerTitle="Meu espaço"
-      navItems={companyNavItems}
-      panelDescription="Navegação da empresa"
-      panelTitle="Portal da empresa"
-    >
+    <>
       <section className="mt-4 rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
         <p className="text-xs uppercase tracking-wide text-base-content/60">
           Portal da empresa
@@ -310,16 +275,14 @@ export function CompanyHome({ data }: { data: DashboardData }) {
         />
       ) : null}
       <Notifications notifications={notifications} />
-    </DashboardShell>
+    </>
   );
 }
 
 export function CompanyGenericList({
-  activeMenu,
   columns,
   data,
   description,
-  headerIcon,
   headerTitle,
   rows,
 }: {
@@ -332,14 +295,7 @@ export function CompanyGenericList({
   rows: Row[];
 }) {
   return (
-    <DashboardShell
-      activeMenu={activeMenu}
-      headerIcon={headerIcon}
-      headerTitle={headerTitle}
-      navItems={companyNavItems}
-      panelDescription="Navegação da empresa"
-      panelTitle="Portal da empresa"
-    >
+    <>
       <section className="mt-4 rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
         <h2 className="text-xl font-black">{headerTitle}</h2>
         <p className="text-sm text-base-content/70">{description}</p>
@@ -357,85 +313,7 @@ export function CompanyGenericList({
           </div>
         </article>
       </section>
-    </DashboardShell>
-  );
-}
-
-export function CompanyProfile({ data }: { data: DashboardData }) {
-  const tenant = asRecord(data.tenant);
-  return (
-    <DashboardShell
-      activeMenu="profile"
-      headerIcon="building-2"
-      headerTitle="Perfil da empresa"
-      navItems={companyNavItems}
-      panelDescription="Navegação da empresa"
-      panelTitle="Portal da empresa"
-    >
-      <section className="mt-4">
-        <article className="card border border-base-300 bg-base-100 shadow-sm">
-          <div className="card-body gap-4">
-            <h2 className="card-title text-base">
-              <LucideIcon className="h-4 w-4" name="building-2" />
-              Perfil da empresa
-            </h2>
-            {tenant.banner_path ? (
-              <div
-                aria-label="Banner da empresa"
-                className="h-36 w-full rounded-xl bg-cover bg-center"
-                role="img"
-                style={{
-                  backgroundImage: `url(${String(tenant.banner_path)})`,
-                }}
-              />
-            ) : null}
-            <BackendForm
-              backendPath="/meu-espaco/perfil"
-              className="grid gap-4 md:grid-cols-2"
-            >
-              {[
-                ["document_number", "Documento"],
-                ["legal_name", "Nome jurídico / razão social"],
-                ["trade_name", "Nome fantasia"],
-                ["entrepreneur_name", "Responsável"],
-                ["entrepreneur_email", "E-mail do responsável"],
-                ["entrepreneur_phone", "Telefone do responsável"],
-                ["contact_email", "E-mail institucional"],
-                ["contact_phone", "Telefone institucional"],
-                ["city", "Cidade sede"],
-                ["state", "Estado sede"],
-              ].map(([name, label]) => (
-                <TextInput
-                  key={name}
-                  defaultValue={String(tenant[name] || "")}
-                  label={label}
-                  name={name}
-                />
-              ))}
-              {[
-                ["description", "Descrição institucional"],
-                ["services_text", "Serviços"],
-                ["products_text", "Produtos institucionais"],
-              ].map(([name, label]) => (
-                <label key={name} className="form-control md:col-span-2">
-                  <span className="label-text font-semibold">{label}</span>
-                  <textarea
-                    className="textarea textarea-bordered min-h-24 w-full"
-                    defaultValue={String(tenant[name] || "")}
-                    name={name}
-                  />
-                </label>
-              ))}
-              <FileInput label="Logo" name="logo" />
-              <FileInput label="Banner da página" name="banner" />
-              <button className="btn btn-primary md:col-span-2" type="submit">
-                Salvar perfil da empresa
-              </button>
-            </BackendForm>
-          </div>
-        </article>
-      </section>
-    </DashboardShell>
+    </>
   );
 }
 
@@ -444,193 +322,126 @@ export function AddCompany({ data }: { data: DashboardData }) {
   const invites = asRecordArray(data.invites);
 
   return (
-    <DashboardShell
-      headerIcon="building-2"
-      headerTitle="Adicionar empresa"
-      navItems={customerNavItems}
-      panelDescription="Acesso do cliente"
-      panelTitle="Expansão da conta"
-    >
-      <main className="mx-auto w-full max-w-5xl py-6">
-        <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="space-y-6">
-            <article className="rounded-3xl border border-base-300 bg-base-100 p-6 shadow-sm">
-              <h2 className="text-lg font-black text-base-content">
-                Status atual da conta
-              </h2>
-              <p className="mt-3 text-sm text-base-content/70">
-                Solicite uma empresa vinculada à sua conta ou conclua convites
-                pendentes.
-              </p>
-            </article>
-            <article className="rounded-3xl border border-base-300 bg-base-100 p-6 shadow-sm">
-              <h2 className="text-lg font-black text-base-content">
-                Convites pendentes
-              </h2>
-              {invites.length === 0 ? (
-                <p className="mt-4 text-sm text-base-content/65">
-                  Nenhum convite pendente foi encontrado para este e-mail.
-                </p>
-              ) : (
-                <div className="mt-4 space-y-3">
-                  {invites.map((invite) => (
-                    <div
-                      key={String(invite.id || JSON.stringify(invite))}
-                      className="rounded-2xl border border-warning/30 bg-warning/10 p-4"
-                    >
-                      <p className="font-semibold text-base-content">
-                        {String(invite.invite_type_label || "-")}
-                      </p>
-                      <p className="mt-2 text-xs font-semibold uppercase tracking-[0.22em] text-base-content/50">
-                        Expira em {String(invite.expires_at || "-")}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </article>
-          </div>
-          <article className="rounded-3xl border border-base-300 bg-base-100 p-6 shadow-sm sm:p-8">
-            <h2 className="mb-5 text-xl font-black text-base-content">
-              Solicitação interna
+    <main className="mx-auto w-full max-w-5xl py-6">
+      <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="space-y-6">
+          <article className="rounded-3xl border border-base-300 bg-base-100 p-6 shadow-sm">
+            <h2 className="text-lg font-black text-base-content">
+              Status atual da conta
             </h2>
-            <BackendForm
-              backendPath="/empresas/adicionar"
-              className="grid gap-5"
-            >
-              <div className="grid gap-3 sm:grid-cols-3">
-                {[
-                  ["conveniada", "Conveniada"],
-                  ["empreendedora", "Empreendedora"],
-                  ["ambas", "As duas"],
-                ].map(([value, label]) => (
-                  <label key={value} className="cursor-pointer">
-                    <input
-                      className="peer sr-only"
-                      defaultChecked={
-                        String(data.defaultRequestMode || "conveniada") ===
-                        value
-                      }
-                      name="request_mode"
-                      type="radio"
-                      value={value}
-                    />
-                    <span className="flex h-full items-center justify-center rounded-2xl border border-base-300 px-4 py-4 text-center text-sm font-black uppercase tracking-[0.18em] transition peer-checked:border-primary peer-checked:bg-primary peer-checked:text-primary-content">
-                      {label}
-                    </span>
-                  </label>
-                ))}
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                {[
-                  ["legal_name", "Razão social"],
-                  ["trade_name", "Nome fantasia"],
-                  ["company_document", "Documento"],
-                  ["contact_name", "Contato responsável"],
-                  ["entrepreneur_name", "Nome do empreendedor"],
-                  ["whatsapp", "WhatsApp"],
-                  ["website", "Website"],
-                  ["city", "Cidade"],
-                  ["state", "Estado"],
-                ].map(([name, label]) => (
-                  <TextInput
-                    key={name}
-                    defaultValue={String(prefill[name] || "")}
-                    label={label}
-                    name={name}
-                    required={name === "trade_name" || name === "contact_name"}
-                  />
-                ))}
-              </div>
-              <label className="form-control w-full">
-                <span className="label-text mb-1 font-semibold">
-                  Proposta ou observações
-                </span>
-                <textarea
-                  className="textarea textarea-bordered min-h-28 w-full"
-                  defaultValue={String(prefill.message || "")}
-                  name="message"
-                  required
-                />
-              </label>
-              <label className="label cursor-pointer justify-start gap-3 rounded-2xl border border-base-300 bg-base-200/40 p-4">
-                <input
-                  className="checkbox checkbox-primary"
-                  defaultChecked
-                  name="privacy_consent"
-                  type="checkbox"
-                  value="1"
-                />
-                <span className="label-text text-sm leading-relaxed">
-                  Li e concordo com a política de privacidade.
-                </span>
-              </label>
-              <button className="btn btn-primary w-full" type="submit">
-                Enviar solicitação interna
-              </button>
-            </BackendForm>
+            <p className="mt-3 text-sm text-base-content/70">
+              Solicite uma empresa vinculada à sua conta ou conclua convites
+              pendentes.
+            </p>
           </article>
-        </section>
-      </main>
-    </DashboardShell>
-  );
-}
-
-export function CardPage({ data }: { data: DashboardData }) {
-  const card = asRecord(data.card);
-  const notifications = asRecordArray(data.notifications);
-  return (
-    <DashboardShell
-      activeMenu="card"
-      headerIcon="qr-code"
-      headerTitle="Meu cartão Clubemp"
-      navItems={customerNavItems}
-      panelDescription="Acesso do cliente"
-      panelTitle="Portal do cliente"
-    >
-      <main className="mx-auto w-full max-w-6xl py-8">
-        <article className="overflow-hidden rounded-[2rem] border border-primary/20 bg-base-100 shadow-xl">
-          <div className="grid gap-8 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center lg:p-8">
-            <div className="rounded-3xl border border-primary/20 bg-[#141008] p-6 text-white shadow-2xl">
-              <p className="text-xs uppercase tracking-[0.3em] text-primary/80">
-                Cartão Clubemp
+          <article className="rounded-3xl border border-base-300 bg-base-100 p-6 shadow-sm">
+            <h2 className="text-lg font-black text-base-content">
+              Convites pendentes
+            </h2>
+            {invites.length === 0 ? (
+              <p className="mt-4 text-sm text-base-content/65">
+                Nenhum convite pendente foi encontrado para este e-mail.
               </p>
-              <h2 className="mt-4 text-3xl font-black">
-                {String(card.holder_name || "")}
-              </h2>
-              <p className="mt-2 text-sm text-white/70">
-                {String(card.card_type_label || card.card_type || "")}
-              </p>
-              <p className="mt-6 font-mono text-sm tracking-[0.25em]">
-                {String(card.card_code || "")}
-              </p>
-            </div>
-            <div className="space-y-5">
-              <div className="rounded-3xl border border-base-300 bg-base-200/40 p-5">
-                <p className="text-sm text-base-content/70">
-                  {String(card.holder_label || "Conta")}
-                </p>
-                <h2 className="mt-1 text-2xl font-extrabold">
-                  {String(card.holder_name || "")}
-                </h2>
-                <p className="mt-4 break-all font-mono text-sm">
-                  {String(card.card_code || "")}
-                </p>
-                {card.public_url ? (
-                  <a
-                    className="link link-primary mt-4 inline-block text-sm font-semibold"
-                    href={String(card.public_url)}
+            ) : (
+              <div className="mt-4 space-y-3">
+                {invites.map((invite) => (
+                  <div
+                    key={String(invite.id || JSON.stringify(invite))}
+                    className="rounded-2xl border border-warning/30 bg-warning/10 p-4"
                   >
-                    Ver página pública vinculada
-                  </a>
-                ) : null}
+                    <p className="font-semibold text-base-content">
+                      {String(invite.invite_type_label || "-")}
+                    </p>
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-[0.22em] text-base-content/50">
+                      Expira em {String(invite.expires_at || "-")}
+                    </p>
+                  </div>
+                ))}
               </div>
+            )}
+          </article>
+        </div>
+        <article className="rounded-3xl border border-base-300 bg-base-100 p-6 shadow-sm sm:p-8">
+          <h2 className="mb-5 text-xl font-black text-base-content">
+            Solicitação interna
+          </h2>
+          <BackendForm
+            backendPath="/portal/empresas/adicionar"
+            className="grid gap-5"
+          >
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                ["conveniada", "Conveniada"],
+                ["empreendedora", "Empreendedora"],
+                ["ambas", "As duas"],
+              ].map(([value, label]) => (
+                <label key={value} className="cursor-pointer">
+                  <input
+                    className="peer sr-only"
+                    defaultChecked={
+                      String(data.defaultRequestMode || "conveniada") === value
+                    }
+                    name="request_mode"
+                    type="radio"
+                    value={value}
+                  />
+                  <span className="flex h-full items-center justify-center rounded-2xl border border-base-300 px-4 py-4 text-center text-sm font-black uppercase tracking-[0.18em] transition peer-checked:border-primary peer-checked:bg-primary peer-checked:text-primary-content">
+                    {label}
+                  </span>
+                </label>
+              ))}
             </div>
-          </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {[
+                ["legal_name", "Razão social"],
+                ["trade_name", "Nome fantasia"],
+                ["company_document", "Documento"],
+                ["contact_name", "Contato responsável"],
+                ["entrepreneur_name", "Nome do empreendedor"],
+                ["whatsapp", "WhatsApp"],
+                ["website", "Website"],
+                ["city", "Cidade"],
+                ["state", "Estado"],
+              ].map(([name, label]) => (
+                <TextInput
+                  key={name}
+                  defaultValue={String(prefill[name] || "")}
+                  label={label}
+                  name={name}
+                  required={name === "trade_name" || name === "contact_name"}
+                />
+              ))}
+            </div>
+            <label className="form-control w-full">
+              <span className="label-text mb-1 font-semibold">
+                Proposta ou observações
+              </span>
+              <textarea
+                className="textarea textarea-bordered min-h-28 w-full"
+                defaultValue={String(prefill.message || "")}
+                name="message"
+                required
+              />
+            </label>
+            <label className="label cursor-pointer justify-start gap-3 rounded-2xl border border-base-300 bg-base-200/40 p-4">
+              <input
+                className="checkbox checkbox-primary"
+                defaultChecked
+                name="privacy_consent"
+                type="checkbox"
+                value="1"
+              />
+              <span className="label-text text-sm leading-relaxed">
+                Li e concordo com a política de privacidade.
+              </span>
+            </label>
+            <button className="btn btn-primary w-full" type="submit">
+              Enviar solicitação interna
+            </button>
+          </BackendForm>
         </article>
-        <Notifications notifications={notifications} />
-      </main>
-    </DashboardShell>
+      </section>
+    </main>
   );
 }
 
@@ -638,56 +449,39 @@ export function PurchasesPage({ data }: { data: DashboardData }) {
   const summary = asRecord(data.summary);
   const purchases = asRecordArray(data.purchases);
   return (
-    <DashboardShell
-      activeMenu="purchases"
-      headerIcon="receipt"
-      headerTitle="Minhas compras"
-      navItems={customerNavItems}
-      panelDescription="Acesso do cliente"
-      panelTitle="Portal do cliente"
-    >
-      <main className="mx-auto w-full max-w-5xl py-8">
-        <SummaryCards
-          cards={[
-            ["Compras", String(summary.purchases_count || 0), ""],
-            ["Pagas", String(summary.paid_count || 0), ""],
-            ["Pendentes", String(summary.pending_count || 0), ""],
-            ["Total gasto", String(summary.total_spent || "R$ 0,00"), ""],
-          ]}
-        />
-        <section className="mt-6">
-          <article className="card border border-base-300 bg-base-100 shadow-sm">
-            <div className="card-body">
-              <h2 className="card-title text-base">
-                <LucideIcon className="h-4 w-4" name="receipt" />
-                Histórico de compras
-              </h2>
-              <DataTable
-                columns={[
-                  "#",
-                  "Data",
-                  "Loja",
-                  "Item",
-                  "Qtd",
-                  "Status",
-                  "Total",
-                ]}
-                emptyMessage="Nenhuma compra registrada."
-                rows={purchases.map((purchase) => [
-                  `#${String(purchase.id || "0")}`,
-                  String(purchase.created_at || "-"),
-                  String(purchase.seller_name || "-"),
-                  String(purchase.item_name || "-"),
-                  String(purchase.quantity || "0"),
-                  String(purchase.status || "-"),
-                  String(purchase.total_amount || "R$ 0,00"),
-                ])}
-              />
-            </div>
-          </article>
-        </section>
-      </main>
-    </DashboardShell>
+    <main className="mx-auto w-full max-w-5xl py-8">
+      <SummaryCards
+        cards={[
+          ["Compras", String(summary.purchases_count || 0), ""],
+          ["Pagas", String(summary.paid_count || 0), ""],
+          ["Pendentes", String(summary.pending_count || 0), ""],
+          ["Total gasto", String(summary.total_spent || "R$ 0,00"), ""],
+        ]}
+      />
+      <section className="mt-6">
+        <article className="card border border-base-300 bg-base-100 shadow-sm">
+          <div className="card-body">
+            <h2 className="card-title text-base">
+              <LucideIcon className="h-4 w-4" name="receipt" />
+              Histórico de compras
+            </h2>
+            <DataTable
+              columns={["#", "Data", "Loja", "Item", "Qtd", "Status", "Total"]}
+              emptyMessage="Nenhuma compra registrada."
+              rows={purchases.map((purchase) => [
+                `#${String(purchase.id || "0")}`,
+                String(purchase.created_at || "-"),
+                String(purchase.seller_name || "-"),
+                String(purchase.item_name || "-"),
+                String(purchase.quantity || "0"),
+                String(purchase.status || "-"),
+                String(purchase.total_amount || "R$ 0,00"),
+              ])}
+            />
+          </div>
+        </article>
+      </section>
+    </main>
   );
 }
 
@@ -821,19 +615,6 @@ function TextInput({
         name={name}
         required={required}
         type={type}
-      />
-    </label>
-  );
-}
-
-function FileInput({ label, name }: { label: string; name: string }) {
-  return (
-    <label className="form-control">
-      <span className="label-text font-semibold">{label}</span>
-      <input
-        className="file-input file-input-bordered w-full"
-        name={name}
-        type="file"
       />
     </label>
   );

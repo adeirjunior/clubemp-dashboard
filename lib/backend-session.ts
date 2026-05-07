@@ -10,6 +10,10 @@ export const BACKEND_STATE_KEYS = [
 export type BackendAuthUser = {
   name?: string;
   email?: string;
+  role?: string;
+  account_type?: string;
+  tenant_id?: string;
+  must_change_password?: string;
   profile_image_url?: string;
   preferred_theme?: string;
 };
@@ -20,6 +24,8 @@ export type DashboardContext = {
   badge?: string;
   path?: string;
   kind?: string;
+  company_type?: string;
+  account_type?: string;
 };
 
 export type BackendSessionState = {

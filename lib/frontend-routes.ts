@@ -29,7 +29,7 @@ const backendToFrontendRoutes = new Map<string, string>([
     "/portal/minha-area/pagamentos/ler-qrcode",
     "/minha-area/pagamentos/ler-qrcode",
   ],
-  ["/portal/meu-espaco/senha", "/meu-espaco/senha"],
+  ["/portal/meu-espaco/senha", "/"],
 ]);
 
 export function frontendPathFromBackendPath(pathname: string) {

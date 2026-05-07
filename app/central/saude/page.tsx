@@ -1,4 +1,3 @@
-import { DashboardShell } from "@/components/dashboard-shell";
 import {
   asRecord,
   asRecordArray,
@@ -21,11 +20,7 @@ export default async function Page({ searchParams }: PageProps) {
   const rows = asRecordArray(metrics.requests_by_route);
 
   return (
-    <DashboardShell
-      activeMenu="health"
-      headerIcon="activity"
-      headerTitle="Saúde do sistema"
-    >
+    <>
       <section className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
           ["Requests", String(metrics.requests_total || 0)],
@@ -118,6 +113,6 @@ export default async function Page({ searchParams }: PageProps) {
           </div>
         </div>
       </section>
-    </DashboardShell>
+    </>
   );
 }

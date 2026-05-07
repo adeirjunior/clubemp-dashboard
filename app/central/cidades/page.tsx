@@ -20,6 +20,8 @@ export default async function Page({ searchParams }: PageProps) {
       activeMenu="cities"
       columns={["Cidade", "UF", "Slug", "Empresas vinculadas", "Atualizado em"]}
       countLabel={`${cities.length} cidades`}
+      createHref="/central/cidades/novo"
+      createLabel="Nova cidade"
       description="Cadastre e organize os municípios usados por empresas, convites e filtros."
       emptyMessage="Nenhuma cidade encontrada."
       headerIcon="map-pin"
@@ -30,6 +32,17 @@ export default async function Page({ searchParams }: PageProps) {
         String(city.slug || "-"),
         String(city.linked_companies || "0"),
         String(city.updated_at || "-"),
+      ])}
+      rowActions={cities.map((city) => [
+        {
+          href: `/central/cidades/ver?id=${String(city.id || 0)}`,
+          label: "Ver",
+        },
+        {
+          href: `/central/cidades/editar?id=${String(city.id || 0)}`,
+          label: "Editar",
+          tone: "primary",
+        },
       ])}
       title="Cidades disponíveis no sistema"
     />

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { DashboardLayoutFrame } from "@/components/dashboard-layout-frame";
+import { readBackendSession } from "@/lib/backend";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,14 +9,20 @@ export const metadata: Metadata = {
     "Dashboard Clubemp em Next.js integrado exclusivamente com a API backend.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await readBackendSession();
+
   return (
     <html lang="pt-BR" data-theme="clubemp-luxe">
-      <body>{children}</body>
+      <body>
+        <DashboardLayoutFrame session={session}>
+          {children}
+        </DashboardLayoutFrame>
+      </body>
     </html>
   );
 }
