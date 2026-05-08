@@ -169,6 +169,11 @@ export function sanitizeBackendLocation(location: string) {
 
   try {
     const url = new URL(location);
+    const backendOrigin = new URL(backendBaseUrl()).origin;
+    if (url.origin !== backendOrigin && !isDashboardOrigin(url.origin)) {
+      return url.toString();
+    }
+
     const pathname = frontendPathFromBackendPath(url.pathname);
     return `${pathname}${url.search}${url.hash}` || "/login";
   } catch {
@@ -176,6 +181,22 @@ export function sanitizeBackendLocation(location: string) {
     const relative = location.replace(base, "") || "/login";
     const [pathname, suffix = ""] = relative.split(/(?=[?#])/);
     return `${frontendPathFromBackendPath(pathname)}${suffix}` || "/login";
+  }
+}
+
+function isDashboardOrigin(origin: string) {
+  const dashboardUrl =
+    process.env.NEXT_PUBLIC_DASHBOARD_APP_URL?.trim() ||
+    process.env.DASHBOARD_APP_URL?.trim() ||
+    "";
+  if (dashboardUrl === "") {
+    return false;
+  }
+
+  try {
+    return new URL(dashboardUrl).origin === origin;
+  } catch {
+    return false;
   }
 }
 

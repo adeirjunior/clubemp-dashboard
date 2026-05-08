@@ -33,6 +33,11 @@ export function BackendForm({
     }
 
     if (state.redirectTo && state.redirectTo !== "__refresh__") {
+      if (/^https?:\/\//i.test(state.redirectTo)) {
+        window.location.assign(state.redirectTo);
+        return;
+      }
+
       if (state.redirectTo === "/login") {
         router.replace(state.redirectTo);
       } else {
