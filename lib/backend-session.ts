@@ -4,6 +4,7 @@ export const BACKEND_STATE_KEYS = [
   "active_dashboard_context",
   "flash_error",
   "flash_success",
+  "entrepreneur_welcome",
   "old_email",
 ] as const;
 
@@ -14,6 +15,8 @@ export type BackendAuthUser = {
   account_type?: string;
   tenant_id?: string;
   must_change_password?: string;
+  status?: string;
+  stripe_customer_id?: string;
   profile_image_url?: string;
   preferred_theme?: string;
 };
@@ -26,6 +29,7 @@ export type DashboardContext = {
   kind?: string;
   company_type?: string;
   account_type?: string;
+  requires_payment?: boolean;
 };
 
 export type BackendSessionState = {
@@ -34,6 +38,7 @@ export type BackendSessionState = {
   active_dashboard_context?: string;
   flash_error?: string;
   flash_success?: string;
+  entrepreneur_welcome?: string;
   old_email?: string;
 };
 

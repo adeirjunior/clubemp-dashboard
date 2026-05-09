@@ -9,6 +9,7 @@ type DashboardContext = {
   key?: string;
   label?: string;
   path?: string;
+  requires_payment?: boolean;
 };
 
 export function DashboardContextSwitcher({
@@ -59,6 +60,7 @@ export function DashboardContextSwitcher({
                   >
                     {context.label}
                     {context.badge ? ` (${context.badge})` : ""}
+                    {context.requires_payment ? " - assinar" : ""}
                   </option>
                 ))}
               </select>

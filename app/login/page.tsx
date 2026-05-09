@@ -12,14 +12,29 @@ import { frontendPathFromBackendPath } from "@/lib/frontend-routes";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page() {
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function Page({ searchParams }: PageProps) {
   const session = await readBackendSession();
+  const query = await searchParams;
+  const checkoutStatus =
+    typeof query.entrepreneur_checkout === "string"
+      ? query.entrepreneur_checkout
+      : "";
   const oldEmail =
     typeof session.old_email === "string" ? session.old_email : "";
   const error =
     typeof session.flash_error === "string" ? session.flash_error : "";
   const success =
     typeof session.flash_success === "string" ? session.flash_success : "";
+  const checkoutMessage =
+    checkoutStatus === "success"
+      ? "Pagamento confirmado. Entre na plataforma para acessar o modo empreendedor."
+      : checkoutStatus === "cancelled"
+        ? "Pagamento cancelado. Você ainda pode acessar sua conta como cliente e assinar depois pelo dashboard."
+        : "";
   const hasAuthenticatedUser = Boolean(session.auth_user);
   const activeContext = getActiveDashboardContext(
     session.dashboard_contexts,
@@ -101,6 +116,17 @@ export default async function Page() {
               {success ? (
                 <div className="alert alert-success">
                   <span>{success}</span>
+                </div>
+              ) : null}
+              {checkoutMessage ? (
+                <div
+                  className={`alert ${
+                    checkoutStatus === "success"
+                      ? "alert-success"
+                      : "alert-warning"
+                  }`}
+                >
+                  <span>{checkoutMessage}</span>
                 </div>
               ) : null}
             </div>

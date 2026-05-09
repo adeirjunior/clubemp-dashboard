@@ -14,6 +14,7 @@ import {
 } from "@/lib/dashboard-navigation";
 import { BackendForm } from "./backend-form";
 import { DashboardContextSwitcher } from "./dashboard-context-switcher";
+import { EntrepreneurCheckoutReturn } from "./entrepreneur-checkout-return";
 import { ForcePasswordChangeModal } from "./force-password-change-modal";
 import { LucideIcon } from "./lucide-icon";
 
@@ -179,6 +180,7 @@ export function DashboardLayoutFrame({
         flashError={session.flash_error}
         open={mustChangePassword}
       />
+      <EntrepreneurCheckoutReturn />
     </>
   );
 }

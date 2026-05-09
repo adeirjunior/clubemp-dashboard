@@ -91,7 +91,10 @@ export async function submitBackendFormAction(
 
   if (backendPath === "/dashboard/contexto") {
     return {
-      redirectTo: "/",
+      redirectTo:
+        typeof payload.redirect_url === "string" && payload.redirect_url
+          ? sanitizeBackendLocation(payload.redirect_url)
+          : "/",
       success: true,
     };
   }
@@ -103,6 +106,51 @@ export async function submitBackendFormAction(
         : onSuccess === "reload"
           ? "__refresh__"
           : "",
+    success: true,
+  };
+}
+
+export async function confirmEntrepreneurCheckoutReturn(sessionId: string) {
+  const normalizedSessionId = sessionId.trim();
+  if (!normalizedSessionId) {
+    return {
+      error: "Sessão de checkout inválida.",
+      success: false,
+    };
+  }
+
+  const response = await fetchBackendResponse(
+    "/register-entrepreneur/confirm",
+    {
+      body: JSON.stringify({ session_id: normalizedSessionId }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    },
+  );
+
+  await persistBackendState(response, "/register-entrepreneur/confirm");
+
+  const payload = (await response.json().catch(() => ({}))) as {
+    message?: string;
+    redirect_url?: string;
+    success?: boolean;
+  };
+
+  if (!response.ok || payload.success === false) {
+    return {
+      error:
+        payload.message ||
+        "Pagamento confirmado, mas a ativação ainda não foi concluída.",
+      success: false,
+    };
+  }
+
+  return {
+    redirectTo: payload.redirect_url
+      ? sanitizeBackendLocation(payload.redirect_url)
+      : "/",
     success: true,
   };
 }
