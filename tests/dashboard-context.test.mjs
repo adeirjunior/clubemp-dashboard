@@ -8,8 +8,8 @@ import {
 
 test("returns the matching active dashboard context when key exists", () => {
   const contexts = [
-    { key: "admin", label: "Admin", path: "/dashboard/central" },
-    { key: "company", label: "Empresa", path: "/meu-espaco" },
+    { key: "admin", label: "Admin", path: "/" },
+    { key: "company", label: "Empresa", path: "/" },
   ];
 
   assert.deepEqual(getActiveDashboardContext(contexts, "company"), contexts[1]);
@@ -17,8 +17,8 @@ test("returns the matching active dashboard context when key exists", () => {
 
 test("falls back to the first context when the active key is missing", () => {
   const contexts = [
-    { key: "admin", label: "Admin", path: "/dashboard/central" },
-    { key: "company", label: "Empresa", path: "/meu-espaco" },
+    { key: "admin", label: "Admin", path: "/" },
+    { key: "company", label: "Empresa", path: "/" },
   ];
 
   assert.deepEqual(getActiveDashboardContext(contexts, "missing"), contexts[0]);

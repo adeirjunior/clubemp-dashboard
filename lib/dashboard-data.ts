@@ -48,31 +48,29 @@ function overrideBackendPath(
 ) {
   const queryId = firstQueryValue(query.id);
 
-  if (pathname === "/central/clientes/ver" && queryId) {
+  if (pathname === "/clientes/ver" && queryId) {
     return `/dashboard/central/clientes/${queryId}`;
   }
 
   if (
-    (pathname === "/central/cidades/ver" ||
-      pathname === "/central/cidades/editar") &&
+    (pathname === "/cidades/ver" || pathname === "/cidades/editar") &&
     queryId
   ) {
     return `/dashboard/central/cidades/${queryId}`;
   }
 
   if (
-    (pathname === "/central/categorias/ver" ||
-      pathname === "/central/categorias/editar") &&
+    (pathname === "/categorias/ver" || pathname === "/categorias/editar") &&
     queryId
   ) {
     return `/dashboard/central/categorias/${queryId}`;
   }
 
-  if (pathname === "/central/repasses/ver" && queryId) {
+  if (pathname === "/repasses/ver" && queryId) {
     return `/dashboard/central/repasses/${queryId}`;
   }
 
-  if (pathname === "/central/solicitacoes/ver" && queryId) {
+  if (pathname === "/solicitacoes/ver" && queryId) {
     return `/dashboard/central/solicitacoes/${queryId}`;
   }
 
@@ -95,71 +93,25 @@ export async function loadDashboardData(
 }
 
 export async function loadCentralOverviewData() {
-  const [
-    requests,
-    payouts,
-    companies,
-    customers,
-    news,
-    events,
-    courses,
-    giveaways,
-  ] = await Promise.all([
-    fetchBackendDataPayload("/dashboard/central/solicitacoes", {}),
-    fetchBackendDataPayload("/dashboard/central/repasses", {}),
-    fetchBackendDataPayload("/dashboard/central/empresas", {}),
-    fetchBackendDataPayload("/dashboard/central/clientes", {}),
-    fetchBackendDataPayload("/dashboard/central/noticias", {}),
-    fetchBackendDataPayload("/dashboard/central/eventos", {}),
-    fetchBackendDataPayload("/dashboard/central/cursos", {}),
-    fetchBackendDataPayload("/dashboard/central/sorteios", {}),
-  ]);
+  const payload = await fetchBackendDataPayload("/dashboard/central", {});
 
-  const redirectTarget =
-    requests.redirectTo ||
-    payouts.redirectTo ||
-    companies.redirectTo ||
-    customers.redirectTo ||
-    news.redirectTo ||
-    events.redirectTo ||
-    courses.redirectTo ||
-    giveaways.redirectTo;
-
-  if (redirectTarget) {
-    redirect(redirectTarget);
+  if (payload.redirectTo) {
+    redirect(payload.redirectTo);
   }
 
-  const requestItems = Array.isArray(requests.data.items)
-    ? requests.data.items
-    : [];
-  const payoutItems = Array.isArray(payouts.data.items)
-    ? payouts.data.items
-    : [];
-  const companyItems = Array.isArray(companies.data.companies)
-    ? companies.data.companies
-    : [];
-  const customerItems = Array.isArray(customers.data.items)
-    ? customers.data.items
-    : [];
-  const newsItems = Array.isArray(news.data.items) ? news.data.items : [];
-  const eventItems = Array.isArray(events.data.items) ? events.data.items : [];
-  const courseItems = Array.isArray(courses.data.items)
-    ? courses.data.items
-    : [];
-  const giveawayItems = Array.isArray(giveaways.data.items)
-    ? giveaways.data.items
-    : [];
+  const data = normalizeBackendData(payload.data);
+  const counters = asRecord(data.counters);
 
   return {
-    blogPostsCount: newsItems.length,
-    companiesCount: companyItems.length,
-    coursesCount: courseItems.length,
-    customersCount: customerItems.length,
-    eventsCount: eventItems.length,
-    financeMetrics: {},
-    giveawaysCount: giveawayItems.length,
-    pendingPayoutsCount: payoutItems.length,
-    requestsCount: requestItems.length,
+    blogPostsCount: counters.blogPosts ?? 0,
+    companiesCount: counters.companies ?? 0,
+    coursesCount: counters.courses ?? 0,
+    customersCount: counters.customers ?? 0,
+    eventsCount: counters.events ?? 0,
+    financeMetrics: asRecord(data.financeMetrics),
+    giveawaysCount: counters.giveaways ?? 0,
+    pendingPayoutsCount: counters.pendingPayouts ?? 0,
+    requestsCount: counters.requests ?? 0,
   } satisfies DashboardData;
 }
 

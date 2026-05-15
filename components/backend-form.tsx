@@ -11,6 +11,7 @@ type BackendFormProps = {
   defaultError?: string;
   loadingLabel?: string;
   onSuccess?: "reload" | "stay";
+  successRedirectTo?: string;
 };
 
 export function BackendForm({
@@ -20,6 +21,7 @@ export function BackendForm({
   defaultError = "Não foi possível concluir a solicitação.",
   loadingLabel = "Enviando...",
   onSuccess = "reload",
+  successRedirectTo = "",
 }: BackendFormProps) {
   const router = useRouter();
   const [state, formAction, isSubmitting] = useActionState(
@@ -56,6 +58,11 @@ export function BackendForm({
     <form action={formAction} className={className}>
       <input name="__backendPath" type="hidden" value={backendPath} />
       <input name="__onSuccess" type="hidden" value={onSuccess} />
+      <input
+        name="__successRedirectTo"
+        type="hidden"
+        value={successRedirectTo}
+      />
       {state?.error ? (
         <div className="alert alert-error mb-4">
           <span>{state.error || defaultError}</span>

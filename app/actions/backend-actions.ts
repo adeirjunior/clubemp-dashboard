@@ -39,9 +39,12 @@ export async function submitBackendFormAction(
 ): Promise<BackendActionState> {
   const backendPathValue = formData.get("__backendPath");
   const onSuccessValue = formData.get("__onSuccess");
+  const successRedirectToValue = formData.get("__successRedirectTo");
   const backendPath =
     typeof backendPathValue === "string" ? backendPathValue : "";
   const onSuccess = onSuccessValue === "stay" ? "stay" : "reload";
+  const successRedirectTo =
+    typeof successRedirectToValue === "string" ? successRedirectToValue : "";
 
   if (!backendPath) {
     return {
@@ -52,6 +55,7 @@ export async function submitBackendFormAction(
 
   formData.delete("__backendPath");
   formData.delete("__onSuccess");
+  formData.delete("__successRedirectTo");
   removeEmptyFileFields(formData);
 
   const response = await fetchBackendResponse(backendPath, {
@@ -100,8 +104,9 @@ export async function submitBackendFormAction(
   }
 
   return {
-    redirectTo:
-      typeof payload.redirect_url === "string" && payload.redirect_url
+    redirectTo: successRedirectTo
+      ? successRedirectTo
+      : typeof payload.redirect_url === "string" && payload.redirect_url
         ? sanitizeBackendLocation(payload.redirect_url)
         : onSuccess === "reload"
           ? "__refresh__"

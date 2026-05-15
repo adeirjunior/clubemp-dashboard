@@ -1,49 +1,47 @@
 export const adminNavItems = [
   ["overview", "/", "layout-dashboard", "Visão geral"],
-  ["requests", "/central/solicitacoes", "building-2", "Solicitações"],
-  ["payouts", "/central/repasses", "hand-coins", "Repasses"],
-  ["sales", "/central/compras", "shopping-cart", "Compras"],
-  ["companies", "/central/empresas", "store", "Empresas"],
-  ["customers", "/central/clientes", "users-round", "Clientes"],
-  ["news", "/central/noticias", "newspaper", "Notícias"],
-  ["events", "/central/eventos", "calendar-days", "Eventos"],
-  ["courses", "/central/cursos", "graduation-cap", "Cursos"],
-  ["giveaways", "/central/sorteios", "ticket", "Sorteios"],
-  ["privacy", "/central/privacidade", "shield-check", "Privacidade"],
-  ["health", "/central/saude", "activity", "Saúde do sistema"],
+  ["analytics", "/analytics", "bar-chart-3", "Analytics"],
+  ["requests", "/solicitacoes", "building-2", "Solicitações"],
+  ["payouts", "/repasses", "hand-coins", "Repasses"],
+  ["sales", "/compras", "shopping-cart", "Compras"],
+  ["companies", "/empresas", "store", "Empresas"],
+  ["customers", "/clientes", "users-round", "Clientes"],
+  ["news", "/noticias", "newspaper", "Notícias"],
+  ["events", "/eventos", "calendar-days", "Eventos"],
+  ["courses", "/cursos", "graduation-cap", "Cursos"],
+  ["giveaways", "/sorteios", "ticket", "Sorteios"],
+  ["privacy", "/privacidade", "shield-check", "Privacidade"],
+  ["health", "/saude", "activity", "Saúde do sistema"],
   [
     "entrepreneur-invites",
-    "/central/convites/empreendedores",
+    "/convites/empreendedores",
     "mail-plus",
     "Convites empreendedor",
   ],
-  ["cities", "/central/cidades", "map-pin", "Cidades"],
-  ["categories", "/central/categorias", "tag", "Categorias"],
+  ["cities", "/cidades", "map-pin", "Cidades"],
+  ["categories", "/categorias", "tag", "Categorias"],
 ] as const;
 
 export const companyNavItems = [
   ["overview", "/", "layout-dashboard", "Visão geral"],
-  ["profile", "/meu-espaco/perfil", "building-2", "Perfil"],
-  ["associates", "/meu-espaco/associados", "users", "Associados"],
-  ["users", "/meu-espaco/usuarios", "users-round", "Equipe"],
-  ["sales", "/meu-espaco/compras", "shopping-cart", "Compras"],
-  ["payments", "/meu-espaco/cobrancas", "credit-card", "Cobranças"],
-  ["news", "/meu-espaco/noticias", "newspaper", "Notícias"],
-  ["catalog", "/meu-espaco/catalogo", "shopping-bag", "Catálogo"],
+  ["analytics", "/analytics", "bar-chart-3", "Analytics"],
+  ["associates", "/associados", "users", "Associados"],
+  ["users", "/usuarios", "users-round", "Equipe"],
+  ["sales", "/compras", "shopping-cart", "Compras"],
+  ["payments", "/pagamentos", "credit-card", "Cobranças"],
+  ["news", "/noticias", "newspaper", "Notícias"],
+  ["events", "/eventos", "calendar-days", "Eventos"],
+  ["catalog", "/catalogo", "shopping-bag", "Catálogo"],
   ["card", "/meu-cartao", "qr-code", "Meu cartão"],
+  ["company-settings", "/perfil", "settings", "Configurações"],
 ] as const;
 
 export const customerNavItems = [
   ["overview", "/", "layout-dashboard", "Minha área"],
-  ["payments", "/minha-area/pagamentos", "credit-card", "Pagamentos"],
-  [
-    "payment-scanner",
-    "/minha-area/pagamentos/ler-qrcode",
-    "scan-qr-code",
-    "Ler QR Code",
-  ],
+  ["payments", "/pagamentos", "credit-card", "Pagamentos"],
+  ["payment-scanner", "/pagamentos/ler-qrcode", "scan-qr-code", "Ler QR Code"],
   ["card", "/meu-cartao", "qr-code", "Meu cartão"],
-  ["purchases", "/minhas-compras", "receipt", "Compras"],
+  ["purchases", "/compras", "receipt", "Compras"],
   ["settings", "/configuracoes", "settings", "Configurações"],
 ] as const;
 
@@ -71,7 +69,11 @@ export function groupNavItems(items: ReadonlyArray<NavItem>): NavSection[] {
     return [
       {
         label: "Visão geral",
-        items: compact([byKey.get("overview"), byKey.get("health")]),
+        items: compact([
+          byKey.get("overview"),
+          byKey.get("analytics"),
+          byKey.get("health"),
+        ]),
       },
       {
         label: "Operações",
@@ -107,18 +109,25 @@ export function groupNavItems(items: ReadonlyArray<NavItem>): NavSection[] {
     ].filter((section) => section.items.length > 0);
   }
 
-  if (items === companyNavItems || (hasKey("profile") && hasKey("users"))) {
+  if (
+    items === companyNavItems ||
+    (hasKey("company-settings") && hasKey("users"))
+  ) {
     return [
       {
         label: "Visão geral",
-        items: compact([byKey.get("overview"), byKey.get("card")]),
+        items: compact([
+          byKey.get("overview"),
+          byKey.get("analytics"),
+          byKey.get("card"),
+        ]),
       },
       {
         label: "Empresa",
         items: compact([
-          byKey.get("profile"),
           byKey.get("catalog"),
           byKey.get("news"),
+          byKey.get("events"),
         ]),
       },
       {
@@ -128,6 +137,10 @@ export function groupNavItems(items: ReadonlyArray<NavItem>): NavSection[] {
       {
         label: "Financeiro",
         items: compact([byKey.get("sales"), byKey.get("payments")]),
+      },
+      {
+        label: "Conta",
+        items: compact([byKey.get("company-settings")]),
       },
     ].filter((section) => section.items.length > 0);
   }
@@ -175,16 +188,11 @@ export function navItemsForContextKind(kind: string | undefined) {
 }
 
 export function routeMetaForPathname(pathname: string) {
-  if (
-    pathname === "/" ||
-    pathname === "/central" ||
-    pathname === "/meu-espaco" ||
-    pathname === "/minha-area"
-  ) {
+  if (pathname === "/") {
     return {
       activeMenu: "overview",
       headerIcon: "layout-dashboard",
-      headerTitle: pathname === "/minha-area" ? "Minha área" : "Visão geral",
+      headerTitle: "Visão geral",
     };
   }
 

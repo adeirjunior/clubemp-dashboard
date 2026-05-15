@@ -1,11 +1,10 @@
 import { cookies } from "next/headers";
-import { Agent } from "undici";
 import { decodeBackendSessionState } from "./backend-session";
 import { frontendPathFromBackendPath } from "./frontend-routes";
 
 export const BACKEND_STATE_COOKIE = "clubemp_backend_state";
 
-let selfSignedBackendAgent: Agent | undefined;
+let selfSignedBackendTlsConfigured = false;
 
 function backendBaseUrl() {
   const raw =
@@ -18,7 +17,27 @@ function backendBaseUrl() {
     );
   }
 
-  return raw.replace(/\/+$/, "");
+  return normalizeBackendBaseUrl(raw);
+}
+
+function normalizeBackendBaseUrl(raw: string) {
+  const withoutTrailingSlash = raw.replace(/\/+$/, "");
+
+  if (!allowSelfSignedBackendTls()) {
+    return withoutTrailingSlash;
+  }
+
+  try {
+    const url = new URL(withoutTrailingSlash);
+    if (url.protocol === "https:" && url.hostname.endsWith(".ddev.site")) {
+      url.protocol = "http:";
+      return url.toString().replace(/\/+$/, "");
+    }
+  } catch {
+    return withoutTrailingSlash;
+  }
+
+  return withoutTrailingSlash;
 }
 
 export function backendApiUrl(path: string, searchParams?: URLSearchParams) {
@@ -44,9 +63,7 @@ function allowSelfSignedBackendTls() {
   return value === "1" || value === "true";
 }
 
-function backendFetchInit(init: RequestInit): RequestInit & {
-  dispatcher?: Agent;
-} {
+function backendFetchInit(init: RequestInit): RequestInit {
   if (
     !allowSelfSignedBackendTls() ||
     !backendBaseUrl().startsWith("https://")
@@ -54,16 +71,12 @@ function backendFetchInit(init: RequestInit): RequestInit & {
     return init;
   }
 
-  selfSignedBackendAgent ??= new Agent({
-    connect: {
-      rejectUnauthorized: false,
-    },
-  });
+  if (!selfSignedBackendTlsConfigured) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    selfSignedBackendTlsConfigured = true;
+  }
 
-  return {
-    ...init,
-    dispatcher: selfSignedBackendAgent,
-  };
+  return init;
 }
 
 function appendQuery(
@@ -121,6 +134,12 @@ export async function fetchBackendDataPayload(
       message?: string;
       redirect_url?: string;
     } | null;
+
+    if (response.status === 403) {
+      throw new Error(
+        payload?.message || "Você não possui permissão para acessar esta área.",
+      );
+    }
 
     return {
       data: {},

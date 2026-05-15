@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { BackendForm } from "@/components/backend-form";
+import { EditorJsField } from "@/components/editor-js-field";
+import { ImagePicker } from "@/components/image-picker";
+import { LucideIcon } from "@/components/lucide-icon";
 
 export type TableRowAction = {
   href: string;
@@ -14,6 +17,9 @@ export function SimpleCrudTable({
   createLabel,
   description,
   emptyMessage,
+  headerBadge,
+  headerIcon,
+  headerTitle,
   rowActions,
   rows,
   title,
@@ -36,87 +42,108 @@ export function SimpleCrudTable({
   const tableColumns = hasActions ? [...columns, "Ações"] : columns;
 
   return (
-    <section className="mt-4 space-y-4">
-      <article className="card border border-base-300 bg-base-100 shadow-sm">
-        <div className="card-body p-5">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+    <section className="mt-4 space-y-6">
+      {/* Header Profissional */}
+      <article className="rounded-3xl border border-base-300 bg-base-100 p-6 shadow-sm sm:p-8">
+        <div className="flex flex-wrap items-start justify-between gap-6">
+          <div className="flex gap-5">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-inner">
+              <LucideIcon name={headerIcon} className="h-7 w-7" />
+            </div>
             <div className="space-y-1">
-              <h2 className="text-xl font-bold">{title}</h2>
-              <p className="text-sm text-base-content/70">{description}</p>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-black tracking-tight">{headerTitle || title}</h1>
+                {headerBadge && (
+                  <span className="badge badge-primary badge-outline text-[10px] font-black uppercase tracking-wider">
+                    {headerBadge}
+                  </span>
+                )}
+              </div>
+              <p className="max-w-2xl text-sm font-medium text-base-content/60">
+                {description}
+              </p>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="badge badge-outline">{countLabel}</span>
-              {createHref ? (
-                <Link className="btn btn-primary btn-sm" href={createHref}>
-                  {createLabel || "Novo"}
-                </Link>
-              ) : null}
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="hidden flex-col items-end sm:flex">
+              <span className="text-[10px] font-black uppercase tracking-widest text-base-content/40">Total de registros</span>
+              <span className="text-lg font-black leading-none">{countLabel.split(' ')[0]}</span>
             </div>
+            {createHref && (
+              <Link className="btn btn-primary rounded-2xl shadow-lg shadow-primary/20" href={createHref}>
+                <LucideIcon name="plus" className="h-4 w-4" />
+                {createLabel || "Novo"}
+              </Link>
+            )}
           </div>
         </div>
       </article>
 
-      <article className="card border border-base-300 bg-base-100 shadow-sm">
-        <div className="card-body p-0">
-          <div className="overflow-x-auto">
-            <table className="table table-zebra">
-              <thead>
+      {/* Tabela Melhorada */}
+      <article className="overflow-hidden rounded-3xl border border-base-300 bg-base-100 shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="table table-zebra w-full">
+            <thead>
+              <tr className="bg-base-200/50 text-xs font-black uppercase tracking-widest text-base-content/70">
+                {tableColumns.map((column) => (
+                  <th key={column} className="py-5 px-6 first:pl-8 last:pr-8 last:text-right">
+                    {column}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="text-sm font-medium">
+              {rows.length === 0 ? (
                 <tr>
-                  {tableColumns.map((column) => (
-                    <th key={column}>{column}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {rows.length === 0 ? (
-                  <tr>
-                    <td
-                      className="py-8 text-center text-sm text-base-content/65"
-                      colSpan={tableColumns.length}
-                    >
+                  <td
+                    className="py-16 text-center text-base-content/50 italic"
+                    colSpan={tableColumns.length}
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <LucideIcon name="search" className="h-8 w-8 opacity-20" />
                       {emptyMessage}
-                    </td>
-                  </tr>
-                ) : (
-                  rows.map((row, rowIndex) => {
-                    const rowKeyParts = row
-                      .slice(0, 2)
-                      .map((value) => String(value || "").trim())
-                      .filter(Boolean);
-                    const rowKey =
-                      rowKeyParts.length > 0
-                        ? `${title}-${rowKeyParts.join("|")}-${rowIndex}`
-                        : `${title}-${rowIndex}`;
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                rows.map((row, rowIndex) => {
+                  const rowKeyParts = row
+                    .slice(0, 2)
+                    .map((value) => String(value || "").trim())
+                    .filter(Boolean);
+                  const rowKey =
+                    rowKeyParts.length > 0
+                      ? `${title}-${rowKeyParts.join("|")}-${rowIndex}`
+                      : `${title}-${rowIndex}`;
 
-                    return (
-                      <tr key={rowKey}>
-                        {columns.map((column, cellIndex) => (
-                          <td key={`${title}-${column}`}>
-                            {row[cellIndex] || "-"}
-                          </td>
-                        ))}
-                        {hasActions ? (
-                          <td>
-                            <div className="flex flex-wrap gap-2">
-                              {(rowActions?.[rowIndex] || []).map((action) => (
-                                <Link
-                                  className={`btn btn-xs ${action.tone === "primary" ? "btn-primary" : "btn-outline"}`}
-                                  href={action.href}
-                                  key={`${action.label}-${action.href}`}
-                                >
-                                  {action.label}
-                                </Link>
-                              ))}
-                            </div>
-                          </td>
-                        ) : null}
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                  return (
+                    <tr key={rowKey} className="group hover:bg-primary/5 transition-colors">
+                      {columns.map((column, cellIndex) => (
+                        <td key={`${title}-${column}`} className="py-4 px-6 first:pl-8 last:pr-8">
+                          {row[cellIndex] || "-"}
+                        </td>
+                      ))}
+                      {hasActions ? (
+                        <td className="py-4 px-6 pr-8">
+                          <div className="flex justify-end gap-2">
+                            {(rowActions?.[rowIndex] || []).map((action) => (
+                              <Link
+                                className={`btn btn-xs rounded-lg ${action.tone === "primary" ? "btn-primary shadow-sm" : "btn-outline group-hover:bg-base-100"}`}
+                                href={action.href}
+                                key={`${action.label}-${action.href}`}
+                              >
+                                {action.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </td>
+                      ) : null}
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
       </article>
     </section>
@@ -135,7 +162,9 @@ export type ModuleFormField = {
   type?:
     | "checkbox"
     | "datetime-local"
+    | "editorjs"
     | "file"
+    | "image"
     | "number"
     | "select"
     | "text"
@@ -197,6 +226,38 @@ export function ModuleFormPage({
                   ? "form-control md:col-span-2"
                   : "form-control";
 
+              if (type === "editorjs") {
+                return (
+                  <div
+                    key={`${field.name || field.label}-${field.label}`}
+                    className={className}
+                  >
+                    <EditorJsField
+                      help={field.help}
+                      initialValue={field.value || ""}
+                      name={field.name}
+                    />
+                  </div>
+                );
+              }
+
+              if (type === "image" || type === "file") {
+                return (
+                  <div
+                    key={`${field.name || field.label}-${field.label}`}
+                    className={className}
+                  >
+                    <ImagePicker
+                      defaultValue={field.value}
+                      help={field.help}
+                      label={field.label}
+                      name={field.name || ""}
+                      required={field.required}
+                    />
+                  </div>
+                );
+              }
+
               return (
                 // biome-ignore lint/a11y/noLabelWithoutControl: controls are rendered conditionally by field type inside this wrapper.
                 <label
@@ -251,16 +312,14 @@ export function ModuleFormPage({
                       </label>
                     </>
                   ) : null}
-                  {type === "file" ? (
-                    <input
-                      className="file-input file-input-bordered w-full"
-                      name={field.name}
-                      type="file"
-                    />
-                  ) : null}
-                  {!["textarea", "select", "checkbox", "file"].includes(
-                    type,
-                  ) ? (
+                  {![
+                    "textarea",
+                    "select",
+                    "checkbox",
+                    "editorjs",
+                    "file",
+                    "image",
+                  ].includes(type) ? (
                     <input
                       className="input input-bordered w-full"
                       defaultValue={field.value || ""}
